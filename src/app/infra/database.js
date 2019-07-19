@@ -7,54 +7,17 @@ const sequelize = new Sequelize('money', 'root', 'root', {
 
 const Model = Sequelize.Model;
 
-class Account extends Model {
-}
+sequelize.authenticate()
+    .then(() => console.log("connection successful"))
+    .catch(erro => console.log("connection failed Error - " + erro));
 
-Account.init(
-    {name: {type: Sequelize.STRING}},
-    {sequelize, modelName: 'accounts'}
-);
+// sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
+//     .then(() => sequelize.sync({force: true}))
+//     .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1'))
+//     .then(() => console.log('Database synchronised.'))
+//     .catch(err => console.log(err));
 
-class Category extends Model {
-}
-
-Category.init(
-    {name: {type: Sequelize.STRING}},
-    {sequelize, modelName: 'categories'});
-
-class Transaction extends Model {
-}
-
-Transaction.init({
-        description: {type: Sequelize.STRING},
-        value: {type: Sequelize.DOUBLE},
-        date: {type: Sequelize.DATE},
-        type: {type: Sequelize.STRING},
-        category: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Category,
-                key: 'id'
-            }
-        },
-        sourceAccount: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Account,
-                key: 'id'
-            }
-        },
-        destinationAccount: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Account,
-                key: 'id'
-            }
-        }
-    },
-    {sequelize, modelName: 'transactions'}
-);
-
+module.exports = {Model, Sequelize, sequelize};
 
 /*
 Accounts.create({name: "Bank"});
@@ -68,9 +31,3 @@ Transactions.create({
     destinationAccount: null
 });
 */
-
-// Account.sync({force: true});
-// Category.sync({force: true});
-Transaction.sync({force: true});
-
-module.exports = sequelize;
