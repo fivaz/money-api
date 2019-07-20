@@ -5,7 +5,7 @@ module.exports = (app) => {
     const accountProxy = new AccountProxy();
 
     app.get("/accounts", (req, res) =>
-        accountProxy.findAll(req, res));
+        accountProxy.findWithBalance(req, res));
 
     app.post("/accounts", (req, res) =>
         accountProxy.create(req, res));

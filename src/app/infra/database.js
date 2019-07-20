@@ -43,7 +43,7 @@ Transaction.init({
 
 Transaction.belongsTo(Account, {as: 'sourceAccount'});
 Transaction.belongsTo(Account, {as: 'destinationAccount'});
-// Account.hasMany(Transaction);
+Account.hasMany(Transaction, {foreignKey: 'sourceAccountId'});
 Transaction.belongsTo(Category);
 Category.hasMany(Transaction);
 
