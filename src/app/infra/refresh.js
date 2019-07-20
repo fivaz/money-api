@@ -11,27 +11,43 @@ db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
     .catch(err => console.log(err));
 
 function seed() {
-    return seedAccount()
-        .then(seedCategory())
+    return Promise.all([seedAccount(), seedCategory()])
         .then(seedTransaction());
 }
 
 function seedAccount() {
-    return Account.create({name: "Bank"});
+    return Promise.all([
+        Account.create({name: "Bank"}),
+        Account.create({name: "Wallet"})
+    ]);
 }
 
 function seedCategory() {
-    return Category.create({name: "Supermarket"});
+    return Promise.all([
+        Category.create({name: "Supermarket"}),
+        Category.create({name: "Debts"})
+    ]);
 }
 
 function seedTransaction() {
-    return Transaction.create({
-        description: "Test1",
-        value: 20.05,
-        date: new Date(),
-        type: "Spending",
-        sourceAccountId: 1,
-        categoryId: 1,
-        destinationAccountId: null
-    });
+    return Promise.all([
+        Transaction.create({
+            description: "Test1",
+            value: 20.05,
+            date: new Date(),
+            type: "Spending",
+            sourceAccountId: 1,
+            categoryId: 1,
+            destinationAccountId: null
+        }),
+        Transaction.create({
+            description: "Test2",
+            value: 20.55,
+            date: new Date(),
+            type: "Income",
+            sourceAccountId: 2,
+            categoryId: 2,
+            destinationAccountId: 1
+        })
+    ]);
 }
