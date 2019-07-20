@@ -26,6 +26,21 @@ class AccountProxy extends Proxy {
                 }));
     }
 
+    create(req, res) {
+        this.model
+            .create(req.body)
+            .then(account => {
+                account = account.get({plain: true});
+                account.balance = 0;
+                res.json(account);
+            })
+            .catch(errors =>
+                res.json({
+                    status: 412,
+                    message: errors
+                }));
+    }
+
     //TODO ref this method using SUM and maybe group by to make it faster
     findWithBalance(req, res) {
         this.model
