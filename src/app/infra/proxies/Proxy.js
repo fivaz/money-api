@@ -18,7 +18,10 @@ class Proxy {
     create(req, res) {
         this.model
             .create(req.body)
-            .then(row => res.json(row))
+            .then(row => {
+                row = row.get({plain: true});
+                res.json(row);
+            })
             .catch(errors =>
                 res.json({
                     status: 412,
