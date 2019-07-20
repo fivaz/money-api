@@ -11,23 +11,12 @@ sequelize.authenticate()
     .then(() => console.log("connection successful"))
     .catch(erro => console.log("connection failed Error - " + erro));
 
-// sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
-//     .then(() => sequelize.sync({force: true}))
-//     .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1'))
-//     .then(() => console.log('Database synchronised.'))
-//     .catch(err => console.log(err));
+let db = {};
 
-module.exports = {Model, Sequelize, sequelize};
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+db.Model = Model;
 
-/*
-Accounts.create({name: "Bank"});
-Categories.create({name: "Supermarket"});
-Transactions.create({
-    description: "Test1",
-    value: 20.05,
-    date: new Date(),
-    type: "Spending",
-    sourceAccount: 1,
-    destinationAccount: null
-});
-*/
+module.exports = db;
+
+
