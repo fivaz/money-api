@@ -24,8 +24,18 @@ function seedAccount() {
 
 function seedCategory() {
     return Promise.all([
-        Category.create({name: "Supermarket"}),
-        Category.create({name: "Debts"})
+        Category.create(
+            {
+                name: "Supermarket",
+                budget: 300
+            }
+        ),
+        Category.create(
+            {
+                name: "Debts",
+                budget: 1205.55
+            }
+        )
     ]);
 }
 

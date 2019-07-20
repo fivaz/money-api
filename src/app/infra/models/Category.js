@@ -1,19 +1,18 @@
-const db = require('../database');
+const Sequelize = require('sequelize');
+const sequelize = require('../connection');
+const Model = Sequelize.Model;
 
-class Category extends db.Model {
+class Category extends Model {
 }
 
 Category.init(
     {
-        name: {type: db.Sequelize.STRING},
-        budget: {type: db.Sequelize.DOUBLE}
+        name: {type: Sequelize.STRING},
+        budget: {type: Sequelize.DOUBLE}
     },
     {
-        sequelize: db.sequelize,
+        sequelize,
         modelName: 'categories'
     });
-
-
-// Category.hasMany(Transaction);
 
 module.exports = Category;

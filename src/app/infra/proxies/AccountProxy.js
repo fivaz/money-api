@@ -55,44 +55,6 @@ class AccountProxy extends Proxy {
                     message: errors
                 }));
     }
-
-    // findWithTransactions(req, res) {
-    //     this.model.findOne({_id: req.params.id}, (errors, account) => {
-    //         if (errors)
-    //             console.log(errors);
-    //         else if (!account)
-    //             res.sendStatus(404);
-    //         else {
-    //             account.getTransactions((errors, transactions) => {
-    //                 if (errors)
-    //                     console.log(errors);
-    //                 else {
-    //                     account.transactions = transactions;
-    //                     res.json(account);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-
-    // findWithPopulatedTransactions(req, res) {
-    //     this.model.find({_id: req.params.id}, (errors, account) => {
-    //         if (errors)
-    //             console.log(errors);
-    //         else if (!account)
-    //             res.sendStatus(404);
-    //         else {
-    //             account.getTransactions((errors, transactions) => {
-    //                 if (errors)
-    //                     console.log(errors);
-    //                 else {
-    //                     account.transactions = transactions;
-    //                     res.json(account);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
 }
 
 module.exports = AccountProxy;

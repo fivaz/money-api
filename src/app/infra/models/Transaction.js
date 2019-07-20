@@ -1,24 +1,20 @@
-const db = require('../database');
-const Account = require('./Account');
-const Category = require('./Category');
+const Sequelize = require('sequelize');
+const sequelize = require('../connection');
+const Model = Sequelize.Model;
 
-class Transaction extends db.Model {
+class Transaction extends Model {
 }
 
 Transaction.init({
-        description: {type: db.Sequelize.STRING},
-        value: {type: db.Sequelize.DOUBLE},
-        date: {type: db.Sequelize.DATE},
-        type: {type: db.Sequelize.STRING}
+        description: {type: Sequelize.STRING},
+        value: {type: Sequelize.DOUBLE},
+        date: {type: Sequelize.DATE},
+        type: {type: Sequelize.STRING}
     },
     {
-        sequelize: db.sequelize,
+        sequelize,
         modelName: 'transactions'
     }
 );
-
-Transaction.belongsTo(Account, {as: 'sourceAccount'});
-Transaction.belongsTo(Account, {as: 'destinationAccount'});
-Transaction.belongsTo(Category);
 
 module.exports = Transaction;

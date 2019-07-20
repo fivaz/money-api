@@ -1,16 +1,16 @@
-const db = require('../database');
+const Sequelize = require('sequelize');
+const sequelize = require('../connection');
+const Model = Sequelize.Model;
 
-class Account extends db.Model {
+class Account extends Model {
 }
 
 Account.init(
-    {name: {type: db.Sequelize.STRING}},
+    {name: {type: Sequelize.STRING}},
     {
-        sequelize: db.sequelize,
+        sequelize,
         modelName: 'accounts'
     }
 );
-//
-// Account.hasMany(Transaction);
 
 module.exports = Account;
