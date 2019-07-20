@@ -21,5 +21,4 @@ Transaction.belongsTo(Account, {as: 'sourceAccount'});
 Transaction.belongsTo(Account, {as: 'destinationAccount'});
 Transaction.belongsTo(Category);
 
-
 module.exports = Transaction;

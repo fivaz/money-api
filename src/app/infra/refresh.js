@@ -48,6 +48,15 @@ function seedTransaction() {
             sourceAccountId: 2,
             categoryId: 2,
             destinationAccountId: 1
+        }),
+        Transaction.create({
+            description: "Test3",
+            value: 20.55,
+            date: new Date(),
+            type: "Income",
+            sourceAccountId: 2,
+            categoryId: 2,
+            destinationAccountId: null
         })
     ]);
 }

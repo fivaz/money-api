@@ -13,4 +13,7 @@ Category.init(
         modelName: 'categories'
     });
 
+
+// Category.hasMany(Transaction);
+
 module.exports = Category;

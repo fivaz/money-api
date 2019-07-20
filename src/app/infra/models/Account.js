@@ -10,5 +10,7 @@ Account.init(
         modelName: 'accounts'
     }
 );
+//
+// Account.hasMany(Transaction);
 
 module.exports = Account;

@@ -1,6 +1,6 @@
 const Proxy = require('./Proxy');
-const Account = require('../models/Account');
-const Transaction = require('../models/Transaction');
+const db = require('../database');
+const Account = db.Account;
 
 class AccountProxy extends Proxy {
 
@@ -9,21 +9,20 @@ class AccountProxy extends Proxy {
         this.model = Account;
     }
 
-    findAll(req, res) {
+    find(req, res) {
         this.model
-            .findAll({
-                include: [
-                    {model: Transaction}
-                ]
+            .findByPk(req.params.id)
+            .then(account => {
+                    account.getTransactions()
+                        .then(transactions =>
+                            res.json(transactions));
             })
-            .then(rows => res.json(rows))
             .catch(errors =>
                 res.json({
                     status: 412,
                     message: errors
                 }));
     }
-
 
     // findWithTransactions(req, res) {
     //     this.model.findOne({_id: req.params.id}, (errors, account) => {

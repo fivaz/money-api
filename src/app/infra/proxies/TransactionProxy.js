@@ -1,7 +1,8 @@
 const Proxy = require('./Proxy');
-const Transaction = require('../models/Transaction');
-const Category = require('../models/Category');
-const Account = require('../models/Account');
+const db = require('../database');
+const Account = db.Account;
+const Category = db.Category;
+const Transaction = db.Transaction;
 
 class TransactionProxy extends Proxy {
 
