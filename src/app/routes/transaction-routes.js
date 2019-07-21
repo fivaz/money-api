@@ -10,8 +10,8 @@ module.exports = (app) => {
     app.post("/transactions", (req, res) =>
         transactionProxy.create(req, res));
 
-    app.get("/transactions/:id", (req, res) =>
-        transactionProxy.find(req, res));
+    app.get("/transactions/:accountId", (req, res) =>
+        transactionProxy.findFrom(req, res));
 
     app.delete("/transactions/:id", (req, res) =>
         transactionProxy.delete(req, res));
