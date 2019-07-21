@@ -15,15 +15,28 @@ class AccountProxy extends Proxy {
             .findByPk(req.params.id,
                 {
                     include: [
-                        {model: Transaction}
+                        {
+                            model: Transaction,
+                            as: 'transactionsFrom'
+                        },
+                        {
+                            model: Transaction,
+                            as: 'transactionsTo'
+                        }
                     ]
                 })
-            .then(account => res.json(account))
-            .catch(errors =>
+            .then(account => {
+                account = account.get({plain: true});
+                this.getTransactions(account);
+                res.json(account);
+            })
+            .catch(errors => {
+                console.log(errors);
                 res.json({
                     status: 412,
                     message: errors
-                }));
+                })
+            });
     }
 
     create(req, res) {
@@ -72,7 +85,7 @@ class AccountProxy extends Proxy {
                     ]
                 })
             .then(accounts => {
-                accounts = accounts.map(account => this.format(account));
+                accounts = accounts.map(account => this.addBalance(account));
                 res.json(accounts);
             })
             .catch(errors => {
@@ -85,22 +98,22 @@ class AccountProxy extends Proxy {
     }
 
     getTransactions(account) {
-        let allTransactions = [...account.transactionsFrom];
+        account.transactions = [...account.transactionsFrom];
         account.transactionsTo.forEach(newTransaction => {
-            const isDifferent = allTransactions.every(transaction =>
-                transaction.id != newTransaction.id);
+            const isDifferent = account.transactions.every(transaction =>
+                ((newTransaction.type === "transfer") && (transaction.id != newTransaction.id)));
             if (isDifferent)
-                allTransactions.push(newTransaction);
+                account.transactions.push(newTransaction);
         });
-        return allTransactions;
-    }
-
-    format(account) {
-        account = account.get({plain: true});
-        account.transactions = this.getTransactions(account);
-        account.balance = this.getBalance(account);
         delete account.transactionsFrom;
         delete account.transactionsTo;
+        return account;
+    }
+
+    addBalance(account) {
+        account = account.get({plain: true});
+        this.getTransactions(account);
+        account.balance = this.getBalance(account);
         delete account.transactions;
         return account;
     }

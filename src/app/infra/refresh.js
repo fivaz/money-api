@@ -60,13 +60,22 @@ function seedTransaction() {
             destinationAccountId: null
         }),
         Transaction.create({
+            description: "Money of Wallet2",
+            value: 20.55,
+            date: new Date(),
+            type: "spending",
+            sourceAccountId: 2,
+            categoryId: 2,
+            destinationAccountId: 1
+        }),
+        Transaction.create({
             description: "Money of Bank",
             value: 20.55,
             date: new Date(),
             type: "income",
             sourceAccountId: 1,
             categoryId: 2,
-            destinationAccountId: null
+            destinationAccountId: 2
         })
     ]);
 }
