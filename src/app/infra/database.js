@@ -47,7 +47,8 @@ const Transaction = require('./models/Transaction');
 
 Transaction.belongsTo(Account, {as: 'sourceAccount'});
 Transaction.belongsTo(Account, {as: 'destinationAccount'});
-Account.hasMany(Transaction, {foreignKey: 'sourceAccountId'});
+Account.hasMany(Transaction, {as: 'transactionsFrom', foreignKey: 'sourceAccountId'});
+Account.hasMany(Transaction, {as: 'transactionsTo', foreignKey: 'destinationAccountId'});
 Transaction.belongsTo(Category);
 Category.hasMany(Transaction);
 

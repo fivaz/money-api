@@ -42,29 +42,29 @@ function seedCategory() {
 function seedTransaction() {
     return Promise.all([
         Transaction.create({
-            description: "Test1",
+            description: "Transfer Bank to Wallet",
             value: 20.05,
             date: new Date(),
-            type: "spending",
+            type: "transfer",
             sourceAccountId: 1,
             categoryId: 1,
+            destinationAccountId: 2
+        }),
+        Transaction.create({
+            description: "Money of Wallet",
+            value: 20.55,
+            date: new Date(),
+            type: "spending",
+            sourceAccountId: 2,
+            categoryId: 2,
             destinationAccountId: null
         }),
         Transaction.create({
-            description: "Test2",
+            description: "Money of Bank",
             value: 20.55,
             date: new Date(),
             type: "income",
-            sourceAccountId: 2,
-            categoryId: 2,
-            destinationAccountId: 1
-        }),
-        Transaction.create({
-            description: "Test3",
-            value: 20.55,
-            date: new Date(),
-            type: "income",
-            sourceAccountId: 2,
+            sourceAccountId: 1,
             categoryId: 2,
             destinationAccountId: null
         })
