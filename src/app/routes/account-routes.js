@@ -11,7 +11,7 @@ module.exports = (app) => {
         accountProxy.create(req, res));
 
     app.get("/accounts/:id", (req, res) =>
-        accountProxy.find(req, res));
+        accountProxy.findWithTransactions(req, res));
 
     app.delete("/accounts/:id", (req, res) =>
         accountProxy.delete(req, res));
