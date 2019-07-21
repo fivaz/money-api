@@ -65,22 +65,26 @@ class AccountProxy extends Proxy {
                     ]
                 })
             .then(accounts => {
-                let plainAccounts = [];
-                accounts.forEach(account => {
-                    const reducer = (total, transaction) => total + this.getValue(transaction);
-                    const balance = account.transactions.reduce(reducer, 0).toFixed(2);
-                    let plainAccount = account.get({plain: true});
-                    plainAccount.balance = balance;
-                    delete plainAccount.transactions;
-                    plainAccounts.push(plainAccount);
-                });
-                res.json(plainAccounts);
+                accounts = accounts.map(account => this.format(account));
+                res.json(accounts);
             })
             .catch(errors =>
                 res.json({
                     status: 412,
                     message: errors
                 }));
+    }
+
+    format(account) {
+        account = account.get({plain: true});
+        account.balance = this.getBalance(account);
+        delete account.transactions;
+        return account;
+    }
+
+    getBalance(account) {
+        const reducer = (total, transaction) => total + this.getValue(transaction);
+        return account.transactions.reduce(reducer, 0).toFixed(2);
     }
 }
 
