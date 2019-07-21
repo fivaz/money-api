@@ -45,7 +45,7 @@ function seedTransaction() {
             description: "Test1",
             value: 20.05,
             date: new Date(),
-            type: "Spending",
+            type: "spending",
             sourceAccountId: 1,
             categoryId: 1,
             destinationAccountId: null
@@ -54,7 +54,7 @@ function seedTransaction() {
             description: "Test2",
             value: 20.55,
             date: new Date(),
-            type: "Income",
+            type: "income",
             sourceAccountId: 2,
             categoryId: 2,
             destinationAccountId: 1
@@ -63,7 +63,7 @@ function seedTransaction() {
             description: "Test3",
             value: 20.55,
             date: new Date(),
-            type: "Income",
+            type: "income",
             sourceAccountId: 2,
             categoryId: 2,
             destinationAccountId: null
