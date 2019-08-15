@@ -41,7 +41,12 @@ class TransactionProxy extends Proxy {
                 where: {
                     [Op.or]: [
                         {sourceAccountId: req.params.accountId},
-                        {destinationAccountId: req.params.accountId},
+                        {
+                            [Op.and]: [
+                                {destinationAccountId: req.params.accountId},
+                                {type: "transfer"}
+                            ]
+                        },
                     ]
                 }
             })
