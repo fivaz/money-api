@@ -2,12 +2,38 @@ const Proxy = require('./Proxy');
 const db = require('../database');
 const Account = db.Account;
 const Transaction = db.Transaction;
+const Sequelize = db.Sequelize;
 
 class AccountProxy extends Proxy {
 
     constructor() {
         super();
         this.model = Account;
+    }
+
+    findFull(req, res) {
+        this.model
+            .findAll({
+                include: [
+                    {
+                        model: Transaction,
+                        as: 'transactions_from'
+                    },
+                    {
+                        model: Transaction,
+                        as: 'transactions_to'
+                    }
+                ]
+            })
+            .then(accounts => {
+                accounts = accounts.map(account => AccountProxy.mergeTransactions(account));
+                res.json(accounts);
+            })
+            .catch(errors =>
+                res.json({
+                    status: 412,
+                    message: errors
+                }));
     }
 
     findWithTransactions(req, res) {
@@ -27,7 +53,7 @@ class AccountProxy extends Proxy {
                 })
             .then(account => {
                 account = account.get({plain: true});
-                this.getTransactions(account);
+                AccountProxy.mergeTransactions(account);
                 res.json(account);
             })
             .catch(errors => {
@@ -97,22 +123,17 @@ class AccountProxy extends Proxy {
             });
     }
 
-    getTransactions(account) {
-        account.transactions = [...account.transactionsFrom];
-        account.transactionsTo.forEach(newTransaction => {
-            const isDifferent = account.transactions.every(transaction =>
-                ((newTransaction.type === "transfer") && (transaction.id != newTransaction.id)));
-            if (isDifferent)
-                account.transactions.push(newTransaction);
-        });
-        delete account.transactionsFrom;
-        delete account.transactionsTo;
+    static mergeTransactions(account) {
+        account = account.get({plain: true});
+        account.transactions = account.transactions_from.concat(account.transactions_to);
+        delete account.transactions_from;
+        delete account.transactions_to;
         return account;
     }
 
     addBalance(account) {
         account = account.get({plain: true});
-        this.getTransactions(account);
+        AccountProxy.mergeTransactions(account);
         account.balance = this.getBalance(account);
         delete account.transactions;
         return account;
