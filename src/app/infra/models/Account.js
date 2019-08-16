@@ -8,6 +8,7 @@ class Account extends Model {
 Account.init(
     {name: {type: Sequelize.STRING}},
     {
+        underscored: true,
         sequelize,
         modelName: 'accounts'
     }

@@ -11,6 +11,7 @@ Category.init(
         budget: {type: Sequelize.DOUBLE}
     },
     {
+        underscored: true,
         sequelize,
         modelName: 'categories'
     });
