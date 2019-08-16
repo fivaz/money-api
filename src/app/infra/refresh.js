@@ -12,6 +12,8 @@ const refreshDB = (sequelize = db.sequelize) => {
         .catch(err => console.log(err));
 };
 
+refreshDB();
+
 function seed() {
     return Promise.all([seedAccount(), seedCategory()]).then(seedTransaction());
 }
