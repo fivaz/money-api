@@ -3,7 +3,7 @@ const Account = require('./models/Account');
 const Category = require('./models/Category');
 const Transaction = require('./models/Transaction');
 
-const refreshDB = (sequelize) => {
+const refreshDB = (sequelize = db.sequelize) => {
     sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
         .then(() => sequelize.sync({force: true}))
         .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1'))
