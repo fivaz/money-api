@@ -27,58 +27,34 @@ class AccountProxy extends Proxy {
         });
     }
 
-    findWithTransactions(req, res) {
-        this.findFull()
-            .then(accounts => res.json(accounts))
-            .catch(errors =>
-                res.json({
-                    status: 412,
-                    message: errors
-                }));
+    find(id) {
+        return new Promise((resolve, reject) => {
+            this.model
+                .findByPk(id, {
+                    include: [
+                        {model: Transaction, as: 'transactions_from'},
+                        {model: Transaction, as: 'transactions_to'},
+                    ]
+                })
+                .then(account => {
+                    account = AccountProxy.mergeTransactions(account);
+                    resolve(account);
+                })
+                .catch(errors => reject(errors));
+        });
     }
 
-    // findWithTransactions(req, res) {
-    //     this.model
-    //         .findByPk(req.params.id,
-    //             {
-    //                 include: [
-    //                     {
-    //                         model: Transaction,
-    //                         as: 'transactionsFrom'
-    //                     },
-    //                     {
-    //                         model: Transaction,
-    //                         as: 'transactionsTo'
-    //                     }
-    //                 ]
-    //             })
-    //         .then(account => {
-    //             account = account.get({plain: true});
-    //             AccountProxy.mergeTransactions(account);
-    //             res.json(account);
-    //         })
-    //         .catch(errors => {
-    //             console.log(errors);
-    //             res.json({
-    //                 status: 412,
-    //                 message: errors
-    //             })
-    //         });
-    // }
-
-    create(req, res) {
-        this.model
-            .create(req.body)
-            .then(account => {
-                account = account.get({plain: true});
-                account.balance = 0;
-                res.json(account);
-            })
-            .catch(errors =>
-                res.json({
-                    status: 412,
-                    message: errors
-                }));
+    create(data) {
+        return new Promise((resolve, reject) => {
+            this.model
+                .create(data)
+                .then(account => {
+                    account = account.get({plain: true});
+                    account.balance = 0;
+                    resolve(account);
+                })
+                .catch(errors => reject(errors));
+        });
     }
 
     getValue(account, transaction) {
