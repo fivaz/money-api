@@ -12,9 +12,7 @@ class RouterHelper {
     }
 
     select(req, res) {
-        this.model.model.findAll({
-            underscored: true
-        })
+        this.model.model.findAll()
             .then(rows => res.json(rows))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }

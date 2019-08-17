@@ -34,29 +34,22 @@ class TransactionProxy extends Proxy {
                 }));
     }
 
-    findFrom(req, res) {
+    findFrom(accountId) {
         const Op = db.Sequelize.Op;
-        this.model
+        return this.model
             .findAll({
                 where: {
                     [Op.or]: [
-                        {source_account_id: req.params.accountId},
+                        {source_account_id: accountId},
                         {
                             [Op.and]: [
-                                {destination_account_id: req.params.accountId},
+                                {destination_account_id: accountId},
                                 {type: "transfer"}
                             ]
                         },
                     ]
                 }
-            })
-            .then(transactions =>
-                res.json(transactions))
-            .catch(errors =>
-                res.json({
-                    status: 412,
-                    message: errors
-                }));
+            });
     }
 }
 

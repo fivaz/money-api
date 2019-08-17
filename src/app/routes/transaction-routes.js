@@ -1,22 +1,15 @@
-const TransactionProxy = require('../infra/proxies/TransactionProxy');
+const TransactionRouterHelper = require('../helpers/TransactionRouterHelper');
 
 module.exports = (app) => {
+    const helper = new TransactionRouterHelper();
 
-    const transactionProxy = new TransactionProxy();
+    app.get("/transactions", (req, res) => helper.select(req, res));
 
-    app.get("/transactions", (req, res) =>
-        transactionProxy.findAll(req, res));
+    app.get("/transactions/:accountId", (req, res) => helper.selectFrom(req, res));
 
-    app.post("/transactions", (req, res) =>
-        transactionProxy.create(req, res));
+    app.post("/transactions", (req, res) => helper.create(req, res));
 
-    app.get("/transactions/:accountId", (req, res) =>
-        transactionProxy.findFrom(req, res));
+    app.put("/transactions/:id", (req, res) => helper.update(req, res));
 
-    app.delete("/transactions/:id", (req, res) =>
-        transactionProxy.delete(req, res));
-
-    app.put("/transactions/:id", (req, res) =>
-        transactionProxy.update(req, res));
-
+    app.delete("/transactions/:id", (req, res) => helper.delete(req, res));
 };
