@@ -1,6 +1,11 @@
+const Proxy = require('../infra/proxies/Proxy');
+
 class RouterHelper {
 
     constructor() {
+        /**
+         * @type {Proxy}
+         */
         this.model = null;
     }
 
@@ -8,17 +13,17 @@ class RouterHelper {
         res.json({
             status: code,
             message: errors
-        })
+        });
     }
 
     select(req, res) {
-        this.model.model.findAll()
+        this.model.findAll()
             .then(rows => res.json(rows))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
 
     selectOne(req, res) {
-        this.model.findOneFull(req.params.id)
+        this.model.findByPk(req.params.id)
             .then(row => {
                 if (row)
                     res.json(row);

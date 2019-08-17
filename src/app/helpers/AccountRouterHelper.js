@@ -14,6 +14,17 @@ class AccountRouterHelper extends RouterHelper {
             .then(rows => res.json(rows))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
+
+    selectOne(req, res) {
+        this.model.findOneFull(req.params.id)
+            .then(row => {
+                if (row)
+                    res.json(row);
+                else
+                    res.sendStatus(204);
+            })
+            .catch(errors => RouterHelper.handleError(res, 412, errors));
+    }
 }
 
 module.exports = AccountRouterHelper;
