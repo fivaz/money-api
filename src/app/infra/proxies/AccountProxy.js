@@ -2,6 +2,7 @@ const Proxy = require('./Proxy');
 const db = require('../database');
 const Account = db.Account;
 const Transaction = db.Transaction;
+const Category = db.Category;
 
 class AccountProxy extends Proxy {
 
@@ -17,7 +18,8 @@ class AccountProxy extends Proxy {
                     include: [
                         {model: Transaction, as: 'transactions_from'},
                         {model: Transaction, as: 'transactions_to'},
-                    ]
+                    ],
+                    required: false
                 })
                 .then(accounts => {
                     accounts = accounts.map(account => AccountProxy.mergeTransactions(account));
@@ -32,9 +34,18 @@ class AccountProxy extends Proxy {
             this.model
                 .findByPk(id, {
                     include: [
-                        {model: Transaction, as: 'transactions_from'},
-                        {model: Transaction, as: 'transactions_to'},
-                    ]
+                        {
+                            model: Transaction,
+                            as: 'transactions_from',
+                            include: [Category]
+                        },
+                        {
+                            model: Transaction,
+                            as: 'transactions_to',
+                            include: [Category]
+                        },
+                    ],
+                    required: false
                 })
                 .then(account => {
                     account = AccountProxy.mergeTransactions(account);
