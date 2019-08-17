@@ -18,11 +18,11 @@ class TransactionProxy extends Proxy {
                     {model: Category},
                     {
                         model: Account,
-                        as: 'sourceAccount'
+                        as: 'source_account'
                     },
                     {
                         model: Account,
-                        as: 'destinationAccount'
+                        as: 'destination_account'
                     }
                 ]
             })
@@ -40,10 +40,10 @@ class TransactionProxy extends Proxy {
             .findAll({
                 where: {
                     [Op.or]: [
-                        {sourceAccountId: req.params.accountId},
+                        {source_account_id: req.params.accountId},
                         {
                             [Op.and]: [
-                                {destinationAccountId: req.params.accountId},
+                                {destination_account_id: req.params.accountId},
                                 {type: "transfer"}
                             ]
                         },
