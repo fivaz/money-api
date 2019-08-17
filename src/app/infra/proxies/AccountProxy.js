@@ -12,47 +12,35 @@ class AccountProxy extends Proxy {
     }
 
     findFull() {
-        return new Promise((resolve, reject) => {
-            this.model
-                .findAll({
-                    include: [
-                        {model: Transaction, as: 'transactions_from'},
-                        {model: Transaction, as: 'transactions_to'},
-                    ],
-                    required: false
-                })
-                .then(accounts => {
-                    accounts = accounts.map(account => AccountProxy.mergeTransactions(account));
-                    resolve(accounts);
-                })
-                .catch(errors => reject(errors));
-        });
+        return this.model
+            .findAll({
+                include: [
+                    {model: Transaction, as: 'transactions_from'},
+                    {model: Transaction, as: 'transactions_to'},
+                ],
+                required: false
+            })
+            .then(accounts => accounts.map(account => AccountProxy.mergeTransactions(account)));
     }
 
     findOneFull(id) {
-        return new Promise((resolve, reject) => {
-            this.model
-                .findByPk(id, {
-                    include: [
-                        {
-                            model: Transaction,
-                            as: 'transactions_from',
-                            include: [Category]
-                        },
-                        {
-                            model: Transaction,
-                            as: 'transactions_to',
-                            include: [Category]
-                        },
-                    ],
-                    required: false
-                })
-                .then(account => {
-                    account = AccountProxy.mergeTransactions(account);
-                    resolve(account);
-                })
-                .catch(errors => reject(errors));
-        });
+        return this.model
+            .findByPk(id, {
+                include: [
+                    {
+                        model: Transaction,
+                        as: 'transactions_from',
+                        include: [Category]
+                    },
+                    {
+                        model: Transaction,
+                        as: 'transactions_to',
+                        include: [Category]
+                    },
+                ],
+                required: false
+            })
+            .then(account => AccountProxy.mergeTransactions(account));
     }
 
     static mergeTransactions(account) {
@@ -64,14 +52,8 @@ class AccountProxy extends Proxy {
     }
 
     findWithBalance() {
-        return new Promise((resolve, reject) => {
-            this.findFull()
-                .then(accounts => {
-                    accounts = accounts.map(account => this.addBalance(account));
-                    resolve(accounts);
-                })
-                .catch(errors => reject(errors));
-        });
+        return this.findFull()
+            .then(accounts => accounts.map(account => this.addBalance(account)));
     }
 
     addBalance(account) {
@@ -100,16 +82,13 @@ class AccountProxy extends Proxy {
     }
 
     create(data) {
-        return new Promise((resolve, reject) => {
-            this.model
-                .create(data)
-                .then(account => {
-                    account = account.get({plain: true});
-                    account.balance = 0;
-                    resolve(account);
-                })
-                .catch(errors => reject(errors));
-        });
+        return this.model
+            .create(data)
+            .then(account => {
+                account = account.get({plain: true});
+                account.balance = 0;
+                return account;
+            });
     }
 }
 
