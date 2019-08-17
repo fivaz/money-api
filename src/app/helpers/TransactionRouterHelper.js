@@ -8,6 +8,12 @@ class TransactionRouterHelper extends RouterHelper {
         this.model = new TransactionProxy();
     }
 
+    select(req, res) {
+        this.model.findFull()
+            .then(rows => res.json(rows))
+            .catch(errors => RouterHelper.handleError(res, 412, errors));
+    }
+
     selectFrom(req, res) {
         this.model.findFrom(req.params.accountId)
             .then(rows => res.json(rows))

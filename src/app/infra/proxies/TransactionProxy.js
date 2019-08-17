@@ -11,11 +11,10 @@ class TransactionProxy extends Proxy {
         this.model = Transaction;
     }
 
-    findPopulated(req, res) {
-        this.model
+    findFull() {
+        return this.model
             .findAll({
                 include: [
-                    {model: Category},
                     {
                         model: Account,
                         as: 'source_account'
@@ -23,15 +22,10 @@ class TransactionProxy extends Proxy {
                     {
                         model: Account,
                         as: 'destination_account'
-                    }
+                    },
+                    Category
                 ]
-            })
-            .then(rows => res.json(rows))
-            .catch(errors =>
-                res.json({
-                    status: 412,
-                    message: errors
-                }));
+            });
     }
 
     findFrom(accountId) {
