@@ -11,17 +11,16 @@ class RouterHelper {
         })
     }
 
-    _handlePromise(promise, res) {
-        promise.then(rows => res.json(rows))
+    select(req, res) {
+        this.model.model.findAll({
+            underscored: true
+        })
+            .then(rows => res.json(rows))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
 
-    select(req, res) {
-        this._handlePromise(this.model.findFull(), res);
-    }
-
     selectOne(req, res) {
-        this.model.find(req.params.id)
+        this.model.findOneFull(req.params.id)
             .then(row => {
                 if (row)
                     res.json(row);
