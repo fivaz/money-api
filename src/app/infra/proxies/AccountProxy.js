@@ -15,8 +15,8 @@ class AccountProxy extends Proxy {
         return this.model
             .findAll({
                 include: [
-                    {model: Transaction, as: 'transactions_from'},
-                    {model: Transaction, as: 'transactions_to'},
+                    {model: Transaction, as: 'transactionsFrom'},
+                    {model: Transaction, as: 'transactionsTo'},
                 ],
                 required: false
             })
@@ -29,12 +29,12 @@ class AccountProxy extends Proxy {
                 include: [
                     {
                         model: Transaction,
-                        as: 'transactions_from',
+                        as: 'transactionsFrom',
                         include: [Category]
                     },
                     {
                         model: Transaction,
-                        as: 'transactions_to',
+                        as: 'transactionsTo',
                         include: [Category]
                     },
                 ],
@@ -45,9 +45,9 @@ class AccountProxy extends Proxy {
 
     static mergeTransactions(account) {
         account = account.get({plain: true});
-        account.transactions = account.transactions_from.concat(account.transactions_to);
-        delete account.transactions_from;
-        delete account.transactions_to;
+        account.transactions = account.transactionsFrom.concat(account.transactionsTo);
+        delete account.transactionsFrom;
+        delete account.transactionsTo;
         return account;
     }
 
@@ -69,9 +69,9 @@ class AccountProxy extends Proxy {
             case "spending":
                 return -1 * transaction.value;
             case "transfer":
-                if (account.id === transaction.destination_account_id)
+                if (account.id === transaction.destinationAccountId)
                     return transaction.value;
-                if (account.id === transaction.source_account_id)
+                if (account.id === transaction.sourceAccountId)
                     return -1 * transaction.value;
         }
     }

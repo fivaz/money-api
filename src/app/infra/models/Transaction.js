@@ -12,7 +12,6 @@ Transaction.init({
         type: {type: Sequelize.STRING}
     },
     {
-        underscored: true,
         sequelize,
         modelName: 'transactions'
     }

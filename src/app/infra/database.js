@@ -7,12 +7,12 @@ const Account = require('./models/Account');
 const Category = require('./models/Category');
 const Transaction = require('./models/Transaction');
 
-Transaction.belongsTo(Account, {as: 'source_account', foreignKey: 'source_account_id'});
-Transaction.belongsTo(Account, {as: 'destination_account', foreignKey: 'destination_account_id'});
-Account.hasMany(Transaction, {as: 'transactions_from', foreignKey: 'source_account_id'});
-Account.hasMany(Transaction, {as: 'transactions_to', foreignKey: 'destination_account_id'});
-Transaction.belongsTo(Category, {foreignKey: 'category_id'});
-Category.hasMany(Transaction, {foreignKey: 'category_id'});
+Transaction.belongsTo(Account, {as: 'sourceAccount', foreignKey: 'sourceAccountId'});
+Transaction.belongsTo(Account, {as: 'destinationAccount', foreignKey: 'destinationAccountId'});
+Account.hasMany(Transaction, {as: 'transactionsFrom', foreignKey: 'sourceAccountId'});
+Account.hasMany(Transaction, {as: 'transactionsTo', foreignKey: 'destinationAccountId'});
+Transaction.belongsTo(Category, {foreignKey: 'categoryId'});
+Category.hasMany(Transaction, {foreignKey: 'categoryId'});
 
 // refreshDB(sequelize);
 

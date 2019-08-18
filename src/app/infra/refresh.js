@@ -12,7 +12,7 @@ const refreshDB = (sequelize = db.sequelize) => {
         .catch(err => console.log(err));
 };
 
-refreshDB();
+refreshDB(db.sequelize);
 
 function seed() {
     return Promise.all([seedAccount(), seedCategory()]).then(seedTransaction());
@@ -49,33 +49,33 @@ function seedTransaction() {
             value: 20.05,
             date: new Date(),
             type: "transfer",
-            source_account_id: 1,
-            category_id: 1,
-            destination_account_id: 2
+            sourceAccountId: 1,
+            categoryId: 1,
+            destinationAccountId: 2
         }),
         Transaction.create({
             description: "Money of Wallet",
             value: 20.55,
             date: new Date(),
             type: "spending",
-            source_account_id: 2,
-            category_id: 2
+            sourceAccountId: 2,
+            categoryId: 2
         }),
         Transaction.create({
             description: "Money of Wallet2",
             value: 20.55,
             date: new Date(),
             type: "spending",
-            source_account_id: 2,
-            category_id: 2
+            sourceAccountId: 2,
+            categoryId: 2
         }),
         Transaction.create({
             description: "Money of Bank",
             value: 20.55,
             date: new Date(),
             type: "income",
-            source_account_id: 1,
-            category_id: 2
+            sourceAccountId: 1,
+            categoryId: 2
         })
     ]);
 }
