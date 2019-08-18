@@ -23,6 +23,10 @@ class Proxy {
     destroy(...args) {
         return this.model.destroy(...args);
     }
+
+    create(...args) {
+        return this.model.create(...args);
+    }
 }
 
 module.exports = Proxy;
