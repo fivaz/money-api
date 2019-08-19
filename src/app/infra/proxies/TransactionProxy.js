@@ -28,6 +28,23 @@ class TransactionProxy extends Proxy {
             });
     }
 
+    findOneFull(id) {
+        return this.model
+            .findByPk(id, {
+                include: [
+                    {
+                        model: Account,
+                        as: 'sourceAccount'
+                    },
+                    {
+                        model: Account,
+                        as: 'destinationAccount'
+                    },
+                    Category
+                ]
+            });
+    }
+
     findFrom(accountId) {
         const Op = db.Sequelize.Op;
         return this.model
@@ -44,6 +61,12 @@ class TransactionProxy extends Proxy {
                     ]
                 }
             });
+    }
+
+    update(transaction, id) {
+        return this.model
+            .update(transaction, {where: {id}})
+            .then(() => this.findOneFull(id));
     }
 }
 

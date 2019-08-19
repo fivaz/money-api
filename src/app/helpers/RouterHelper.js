@@ -50,10 +50,8 @@ class RouterHelper {
 
     update(req, res) {
         this.model
-            .update(req.body, {
-                where: {id: req.params.id}
-            })
-            .then(() => res.sendStatus(200))
+            .update(req.body, req.params.id)
+            .then(row => res.json(row))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
 }

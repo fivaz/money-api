@@ -16,8 +16,10 @@ class Proxy {
         return this.model.findByPk(pk);
     }
 
-    update(...args) {
-        return this.model.update(...args);
+    update(object, id) {
+        return this.model
+            .update(object, {where: {id}})
+            .then(() => this.model.findByPk(id));
     }
 
     destroy(...args) {
