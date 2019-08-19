@@ -8,6 +8,12 @@ class UserProxy extends Proxy {
         super();
         this.model = User;
     }
+
+    login(email, password) {
+        this.model.findOne({
+            where: {email, password}
+        }).then(result => result !== null);
+    }
 }
 
 module.exports = UserProxy;

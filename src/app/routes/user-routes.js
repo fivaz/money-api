@@ -8,4 +8,6 @@ module.exports = (app) => {
     app.get("/users/:id", (req, res) => helper.selectOne(req, res));
 
     app.post("/users", (req, res) => helper.create(req, res));
+
+    app.post("/users", (req, res) => helper.login(req, res));
 };
