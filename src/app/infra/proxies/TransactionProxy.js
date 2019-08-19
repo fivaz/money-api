@@ -68,6 +68,13 @@ class TransactionProxy extends Proxy {
             .update(transaction, {where: {id}})
             .then(() => this.findOneFull(id));
     }
+
+    create(transaction) {
+        return this.model
+            .create(transaction)
+            .then(transaction => this.findOneFull(transaction.id));
+    }
+
 }
 
 module.exports = TransactionProxy;

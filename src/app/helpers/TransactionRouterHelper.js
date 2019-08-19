@@ -16,7 +16,13 @@ class TransactionRouterHelper extends RouterHelper {
 
     selectFrom(req, res) {
         this.model.findFrom(req.params.accountId)
-            .then(rows => res.json(rows))
+            .then(transactions => res.json(transactions))
+            .catch(errors => RouterHelper.handleError(res, 412, errors));
+    }
+
+    create(req, res) {
+        this.model.create(req.body)
+            .then(transaction => res.json(transaction))
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
 }
