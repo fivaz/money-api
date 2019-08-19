@@ -1,4 +1,5 @@
 const db = require('./database');
+const User = require('./models/User');
 const Account = require('./models/Account');
 const Category = require('./models/Category');
 const Transaction = require('./models/Transaction');
@@ -15,34 +16,56 @@ const refreshDB = (sequelize = db.sequelize) => {
 // refreshDB(db.sequelize);
 
 function seed() {
-    return Promise.all([seedAccount(), seedCategory()]).then(seedTransaction());
+    return seedUsers()
+        .then(Promise
+            .all([seedAccounts(), seedCategories()])
+            .then(seedTransactions()));
 }
 
-function seedAccount() {
+function seedUsers() {
     return Promise.all([
-        Account.create({name: "Bank"}),
-        Account.create({name: "Wallet"})
+        User.create({
+            firstName: "Stefane",
+            lastName: "Fivaz",
+            email: "stefane@user.com",
+            password: "12345"
+        }),
+        User.create({
+            firstName: "Test",
+            lastName: "Test",
+            email: "test@user.com",
+            password: "12345"
+        })
     ]);
 }
 
-function seedCategory() {
+function seedAccounts() {
     return Promise.all([
-        Category.create(
-            {
-                name: "Supermarket",
-                budget: 300
-            }
-        ),
-        Category.create(
-            {
-                name: "Debts",
-                budget: 1205.55
-            }
-        )
+        Account.create({
+            name: "Bank", userId: 1
+        }),
+        Account.create({
+            name: "Wallet", userId: 2
+        })
     ]);
 }
 
-function seedTransaction() {
+function seedCategories() {
+    return Promise.all([
+        Category.create({
+            name: "Supermarket",
+            budget: 300,
+            userId: 1
+        }),
+        Category.create({
+            name: "Debts",
+            budget: 1205.55,
+            userId: 2
+        })
+    ]);
+}
+
+function seedTransactions() {
     return Promise.all([
         Transaction.create({
             description: "Transfer Bank to Wallet",

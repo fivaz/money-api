@@ -9,5 +9,5 @@ module.exports = (app) => {
 
     app.post("/users", (req, res) => helper.create(req, res));
 
-    app.post("/users", (req, res) => helper.login(req, res));
+    app.post("/login", (req, res) => helper.login(req, res));
 };
