@@ -6,13 +6,18 @@ const Model = Sequelize.Model;
 const Account = require('./models/Account');
 const Category = require('./models/Category');
 const Transaction = require('./models/Transaction');
+const User = require('./models/User');
 
 Transaction.belongsTo(Account, {as: 'sourceAccount', foreignKey: 'sourceAccountId'});
 Transaction.belongsTo(Account, {as: 'destinationAccount', foreignKey: 'destinationAccountId'});
 Account.hasMany(Transaction, {as: 'transactionsFrom', foreignKey: 'sourceAccountId'});
 Account.hasMany(Transaction, {as: 'transactionsTo', foreignKey: 'destinationAccountId'});
-Transaction.belongsTo(Category, {foreignKey: 'categoryId'});
-Category.hasMany(Transaction, {foreignKey: 'categoryId'});
+Transaction.belongsTo(Category);
+Category.hasMany(Transaction);
+User.hasMany(Category);
+Category.belongsTo(User);
+User.hasMany(Account);
+Account.belongsTo(User);
 
 // refreshDB(sequelize);
 
@@ -24,6 +29,7 @@ db.Model = Model;
 db.Account = Account;
 db.Category = Category;
 db.Transaction = Transaction;
+db.User = User;
 
 module.exports = db;
 
