@@ -12,7 +12,7 @@ class UserProxy extends Proxy {
     login(email, password) {
         return this.model.findOne({
             where: {email, password}
-        }).then(result => result !== null);
+        });
     }
 }
 

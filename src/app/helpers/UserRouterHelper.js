@@ -11,9 +11,11 @@ class UserRouterHelper extends RouterHelper {
     login(req, res) {
         this.model
             .login(req.body.email, req.body.password)
-            .then(result => {
-                const status = result ? 200 : 404;
-                res.sendStatus(status);
+            .then(user => {
+                if (user)
+                    res.json(user);
+                else
+                    res.sendStatus(401);
             })
             .catch(errors => RouterHelper.handleError(res, 412, errors));
     }
