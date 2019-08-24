@@ -3,8 +3,9 @@ const dbName = process.env.DB_NAME || 'money';
 const dbUser = process.env.DB_USER || 'root';
 const dbPassword = process.env.DB_PASSWORD || 'root';
 const dbPort = process.env.DB_PORT || 3307;
+const dbHostname = process.env.DB_HOST || 'localhost';
 const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-    host: 'localhost',
+    host: dbHostname,
     dialect: 'mysql',
     port: dbPort,
 });
