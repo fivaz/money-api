@@ -9,15 +9,14 @@ class UserRouterHelper extends RouterHelper {
     }
 
     login(req, res) {
-        this.model
-            .login(req.body.email, req.body.password)
+        const {email, password} = req.body;
+        this.model.login(email, password)
             .then(user => {
                 if (user)
                     res.json(user);
                 else
-                    res.sendStatus(401);
-            })
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+                    RouterHelper.sendResponse(res, 401, 'authentication failed');
+            });
     }
 }
 

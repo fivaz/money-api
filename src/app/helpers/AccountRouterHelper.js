@@ -12,7 +12,7 @@ class AccountRouterHelper extends RouterHelper {
         this.model
             .findWithBalance()
             .then(rows => res.json(rows))
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     selectOne(req, res) {
@@ -23,7 +23,7 @@ class AccountRouterHelper extends RouterHelper {
                 else
                     res.sendStatus(204);
             })
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 }
 

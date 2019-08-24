@@ -9,17 +9,14 @@ class RouterHelper {
         this.model = null;
     }
 
-    static handleError(res, code, errors) {
-        res.json({
-            status: code,
-            message: errors
-        });
+    static sendResponse(res, status, message) {
+        res.json({status, message});
     }
 
     select(req, res) {
         this.model.findAll()
             .then(rows => res.json(rows))
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     selectOne(req, res) {
@@ -30,13 +27,13 @@ class RouterHelper {
                 else
                     res.sendStatus(204);
             })
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     create(req, res) {
         this.model.create(req.body)
             .then(row => res.json(row))
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     delete(req, res) {
@@ -45,14 +42,14 @@ class RouterHelper {
                 where: {id: req.params.id}
             })
             .then(() => res.sendStatus(204))
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     update(req, res) {
         this.model
             .update(req.body, req.params.id)
             .then(row => res.json(row))
-            .catch(errors => RouterHelper.handleError(res, 412, errors));
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 }
 
