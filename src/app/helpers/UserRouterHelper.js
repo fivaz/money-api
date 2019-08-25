@@ -1,5 +1,8 @@
 const UserProxy = require('../infra/proxies/UserProxy');
 const RouterHelper = require('./RouterHelper');
+const jwt = require('jsonwebtoken');
+
+const TOKEN_SECRET = process.env.TOKEN_SECRET || 'secretkey';
 
 class UserRouterHelper extends RouterHelper {
 
@@ -13,7 +16,8 @@ class UserRouterHelper extends RouterHelper {
         this.model.login(email, password)
             .then(user => {
                 if (user)
-                    res.json(user);
+                    jwt.sign({user}, TOKEN_SECRET, (err, token) =>
+                        res.json({token}));
                 else
                     RouterHelper.sendResponse(res, 401, 'authentication failed');
             });
