@@ -1,8 +1,6 @@
 const UserProxy = require('../infra/proxies/UserProxy');
 const RouterHelper = require('./RouterHelper');
-const jwt = require('jsonwebtoken');
-
-const TOKEN_SECRET = process.env.TOKEN_SECRET || 'secretkey';
+const {signToken} = require('../../config/token-service');
 
 class UserRouterHelper extends RouterHelper {
 
@@ -16,7 +14,7 @@ class UserRouterHelper extends RouterHelper {
         this.model.login(email, password)
             .then(user => {
                 if (user)
-                    jwt.sign({user}, TOKEN_SECRET, (err, token) => res.json({token}));
+                    res.json(signToken(user));
                 else
                     RouterHelper.sendResponse(res, 401, 'authentication failed');
             });
@@ -24,8 +22,7 @@ class UserRouterHelper extends RouterHelper {
 
     create(req, res) {
         this.model.create(req.body)
-            .then(user =>
-                jwt.sign({user}, TOKEN_SECRET, (err, token) => res.json({token})))
+            .then(user => res.json(signToken(user)))
             .catch(errors => RouterHelper.sendResponse(res, 409, errors));
     }
 

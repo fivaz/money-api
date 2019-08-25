@@ -1,5 +1,5 @@
 const TransactionRouterHelper = require('../helpers/TransactionRouterHelper');
-const verifyToken = require('../../config/verify-token');
+const {verifyToken} = require('../../config/token-service');
 
 module.exports = (app) => {
     const helper = new TransactionRouterHelper();

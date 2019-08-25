@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const TOKEN_SECRET = process.env.TOKEN_SECRET || 'secretkey';
 
-module.exports = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     const bearerHeader = req.headers.authorization;
     if (typeof bearerHeader !== 'undefined') {
         const bearer = bearerHeader.split(' ');
@@ -18,3 +18,11 @@ module.exports = (req, res, next) => {
     } else
         RouterHelper.sendResponse(res, 499, 'Token required');
 };
+
+const signToken = (user) => {
+    return {
+        token: jwt.sign({user}, TOKEN_SECRET)
+    }
+};
+
+module.exports = {verifyToken, signToken};
