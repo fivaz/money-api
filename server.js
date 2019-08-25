@@ -1,4 +1,4 @@
-const app = require('./src/config/custom-express');
+const app = require('./src/config/app');
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
