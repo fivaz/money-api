@@ -14,7 +14,7 @@ module.exports = (app) => {
             RouterHelper.sendResponse(res, 499, 'token required');
     }
 
-    app.get("/accounts/:userId", verifyToken, (req, res) => helper.selectFrom(req, res));
+    app.get("/accounts", verifyToken, (req, res) => helper.selectFrom(req, res));
 
     //TODO use the second version of routes
     app.get("/account/:id", (req, res) => helper.selectOne(req, res));
