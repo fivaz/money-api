@@ -7,14 +7,12 @@ const verifyToken = (req, res, next) => {
     const bearerHeader = req.headers.authorization;
     if (typeof bearerHeader !== 'undefined') {
         const bearer = bearerHeader.split(' ');
-        jwt.verify(bearer[1], TOKEN_SECRET, (err, authData) => {
-            if (err)
-                RouterHelper.sendResponse(res, 401, 'Unauthorized');
-            else {
-                req.locals = authData;
-                next();
-            }
-        });
+        try {
+            req.locals = jwt.verify(bearer[1], TOKEN_SECRET);
+            next();
+        } catch {
+            RouterHelper.sendResponse(res, 401, 'Unauthorized');
+        }
     } else
         RouterHelper.sendResponse(res, 499, 'Token required');
 };
