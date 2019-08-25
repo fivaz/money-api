@@ -16,8 +16,7 @@ class UserRouterHelper extends RouterHelper {
         this.model.login(email, password)
             .then(user => {
                 if (user)
-                    jwt.sign({user}, TOKEN_SECRET, (err, token) =>
-                        res.json({token}));
+                    jwt.sign({user}, TOKEN_SECRET, (err, token) => res.json({token}));
                 else
                     RouterHelper.sendResponse(res, 401, 'authentication failed');
             });
@@ -25,7 +24,8 @@ class UserRouterHelper extends RouterHelper {
 
     create(req, res) {
         this.model.create(req.body)
-            .then(row => res.json(row))
+            .then(user =>
+                jwt.sign({user}, TOKEN_SECRET, (err, token) => res.json({token})))
             .catch(errors => RouterHelper.sendResponse(res, 409, errors));
     }
 
