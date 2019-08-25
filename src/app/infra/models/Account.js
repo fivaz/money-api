@@ -6,7 +6,9 @@ class Account extends Model {
 }
 
 Account.init(
-    {name: {type: Sequelize.STRING}},
+    {
+        name: {type: Sequelize.STRING}
+    },
     {
         sequelize,
         modelName: 'accounts'

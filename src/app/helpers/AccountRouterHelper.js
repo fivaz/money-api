@@ -8,15 +8,16 @@ class AccountRouterHelper extends RouterHelper {
         this.model = new AccountProxy();
     }
 
-    select(req, res) {
+    selectFrom(req, res) {
         this.model
-            .findWithBalance()
+            .findWithBalance(req.params.userId)
             .then(rows => res.json(rows))
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
     selectOne(req, res) {
-        this.model.findOneFull(req.params.id)
+        this.model
+            .findOneFull(req.params.id)
             .then(row => {
                 if (row)
                     res.json(row);

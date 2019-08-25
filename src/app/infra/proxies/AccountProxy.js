@@ -11,12 +11,13 @@ class AccountProxy extends Proxy {
         this.model = Account;
     }
 
-    findFull() {
+    findFull(userId) {
         return this.model
             .findAll({
+                where: {userId},
                 include: [
                     {model: Transaction, as: 'transactionsFrom'},
-                    {model: Transaction, as: 'transactionsTo'},
+                    {model: Transaction, as: 'transactionsTo'}
                 ],
                 required: false
             })
@@ -51,8 +52,8 @@ class AccountProxy extends Proxy {
         return account;
     }
 
-    findWithBalance() {
-        return this.findFull()
+    findWithBalance(userId) {
+        return this.findFull(userId)
             .then(accounts => accounts.map(account => this.addBalance(account)));
     }
 
