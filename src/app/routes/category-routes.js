@@ -1,15 +1,16 @@
 const CategoryRouterHelper = require('../helpers/CategoryRouterHelper');
+const verifyToken = require('../../config/verify-token');
 
 module.exports = (app) => {
     const helper = new CategoryRouterHelper();
 
-    app.get("/categories", (req, res) => helper.select(req, res));
+    app.get("/categories", verifyToken, (req, res) => helper.select(req, res));
 
-    app.get("/categories/:id", (req, res) => helper.selectOne(req, res));
+    app.get("/categories/:id", verifyToken, (req, res) => helper.selectOne(req, res));
 
-    app.post("/categories", (req, res) => helper.create(req, res));
+    app.post("/categories", verifyToken, (req, res) => helper.create(req, res));
 
-    app.put("/categories/:id", (req, res) => helper.update(req, res));
+    app.put("/categories/:id", verifyToken, (req, res) => helper.update(req, res));
 
-    app.delete("/categories/:id", (req, res) => helper.delete(req, res));
+    app.delete("/categories/:id", verifyToken, (req, res) => helper.delete(req, res));
 };
