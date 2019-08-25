@@ -18,6 +18,13 @@ class UserRouterHelper extends RouterHelper {
                     RouterHelper.sendResponse(res, 401, 'authentication failed');
             });
     }
+
+    create(req, res) {
+        this.model.create(req.body)
+            .then(row => res.json(row))
+            .catch(errors => RouterHelper.sendResponse(res, 409, errors));
+    }
+
 }
 
 module.exports = UserRouterHelper;

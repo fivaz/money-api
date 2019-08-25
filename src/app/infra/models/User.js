@@ -9,7 +9,10 @@ User.init(
     {
         firstName: {type: Sequelize.STRING},
         lastName: {type: Sequelize.STRING},
-        email: {type: Sequelize.STRING},
+        email: {
+            type: Sequelize.STRING,
+            unique: true
+        },
         password: {type: Sequelize.STRING}
     },
     {
