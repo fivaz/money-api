@@ -4,7 +4,7 @@ const {verifyToken} = require('../../config/token-service');
 module.exports = (app) => {
     const helper = new CategoryRouterHelper();
 
-    app.get("/categories", verifyToken, (req, res) => helper.select(req, res));
+    app.get("/categories", verifyToken, (req, res) => helper.selectFrom(req, res));
 
     app.get("/categories/:id", verifyToken, (req, res) => helper.selectOne(req, res));
 

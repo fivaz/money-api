@@ -7,6 +7,16 @@ class CategoryRouterHelper extends RouterHelper {
         super();
         this.model = new CategoryProxy();
     }
+
+    selectFrom(req, res) {
+        return this.model.findAll({
+            where:
+                {userId: req.locals.user.id}
+        })
+            .then(categories => res.json(categories))
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
+    }
+
 }
 
 module.exports = CategoryRouterHelper;
