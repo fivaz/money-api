@@ -6,8 +6,7 @@ module.exports = (app) => {
 
     app.get("/accounts", verifyToken, (req, res) => helper.selectFrom(req, res));
 
-    //TODO use the second version of routes
-    app.get("/account/:id", verifyToken, (req, res) => helper.selectOne(req, res));
+    app.get("/accounts/:id", verifyToken, (req, res) => helper.selectOne(req, res));
 
     app.post("/accounts", verifyToken, (req, res) => helper.create(req, res));
 
