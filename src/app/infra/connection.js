@@ -1,17 +1,17 @@
 const Sequelize = require('sequelize');
 
 const {
-    dbName = 'money',
-    dbUser = 'root',
-    dbPassword = 'root',
-    dbPort = 3307,
-    dbHostname = 'localhost'
+    DB_NAME = 'money',
+    DB_USER = 'root',
+    DB_PASSWORD = 'root',
+    DB_HOST = 'localhost',
+    DB_PORT = 3307
 } = process.env;
 
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-    host: dbHostname,
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+    host: DB_HOST,
     dialect: 'mysql',
-    port: dbPort,
+    port: DB_PORT,
 });
 
 sequelize.authenticate()
