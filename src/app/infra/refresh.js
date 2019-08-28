@@ -17,8 +17,7 @@ refreshDB(db.sequelize);
 
 function seed() {
     return seedUsers()
-        .then(Promise
-            .all([seedAccounts(), seedCategories()])
+        .then(Promise.all([seedAccounts(), seedCategories()])
             .then(seedTransactions()));
 }
 
