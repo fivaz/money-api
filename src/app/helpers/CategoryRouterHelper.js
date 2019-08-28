@@ -17,6 +17,22 @@ class CategoryRouterHelper extends RouterHelper {
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
+    create(req, res) {
+        const category = req.body;
+        category.userId = req.locals.user.id;
+        this.model.create(category)
+            .then(row => res.json(row))
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
+    }
+
+    update(req, res) {
+        const category = req.body;
+        category.userId = req.locals.user.id;
+        this.model.update(category, req.params.id)
+            .then(row => res.json(row))
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
+    }
+
 }
 
 module.exports = CategoryRouterHelper;
