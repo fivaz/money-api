@@ -57,6 +57,11 @@ class AccountProxy extends Proxy {
             .then(accounts => accounts.map(account => this.addBalance(account)));
     }
 
+    findOneWithBalance(id) {
+        return this.findOneFull(id)
+            .then(account => this.addBalance(account));
+    }
+
     addBalance(account) {
         account.balance = this.getBalance(account);
         delete account.transactions;
@@ -90,6 +95,12 @@ class AccountProxy extends Proxy {
                 account.balance = 0;
                 return account;
             });
+    }
+
+    update(object, id) {
+        return this.model
+            .update(object, {where: {id}})
+            .then(() => this.findOneWithBalance(id));
     }
 }
 

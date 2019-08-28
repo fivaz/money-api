@@ -34,6 +34,14 @@ class AccountRouterHelper extends RouterHelper {
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
+    update(req, res) {
+        const account = req.body;
+        account.userId = req.locals.user.id;
+        this.model.update(account, req.params.id)
+            .then(row => res.json(row))
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
+    }
+
 }
 
 module.exports = AccountRouterHelper;
