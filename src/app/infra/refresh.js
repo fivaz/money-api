@@ -8,12 +8,12 @@ const refreshDB = (sequelize = db.sequelize) => {
     sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
         .then(() => sequelize.sync({force: true}))
         .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1'))
-        .then(() => seed())
+        // .then(() => seed())
         .then(() => console.log("Database refreshed"))
         .catch(err => console.log(err));
 };
 
-refreshDB(db.sequelize);
+// refreshDB(db.sequelize);
 
 function seed() {
     return seedUsers()

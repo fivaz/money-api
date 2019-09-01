@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('./connection');
 const Model = Sequelize.Model;
-// const refreshDB = require('./refresh');
+const refreshDB = require('./refresh');
 
 const Account = require('./models/Account');
 const Category = require('./models/Category');
@@ -19,7 +19,7 @@ Account.hasMany(Transaction, {as: 'transactionsTo', foreignKey: 'destinationAcco
 Transaction.belongsTo(Category);
 Category.hasMany(Transaction);
 
-// refreshDB(sequelize);
+refreshDB(sequelize);
 
 let db = {};
 
