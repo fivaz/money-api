@@ -11,7 +11,8 @@ Account.init(
     },
     {
         sequelize,
-        modelName: 'accounts'
+        modelName: 'accounts',
+        paranoid: true
     }
 );
 
