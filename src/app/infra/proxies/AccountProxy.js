@@ -84,7 +84,8 @@ class AccountProxy extends Proxy {
 
     getBalance(account) {
         const reducer = (total, transaction) => total + AccountProxy.getValue(account, transaction);
-        return account.transactions.reduce(reducer, 0).toFixed(2);
+        const balance = account.transactions.reduce(reducer, 0);
+        return Number(balance.toFixed(2));
     }
 
     create(data) {
