@@ -9,7 +9,11 @@ Transaction.init({
         description: {type: Sequelize.STRING},
         value: {type: Sequelize.DOUBLE},
         date: {type: Sequelize.DATE},
-        type: {type: Sequelize.STRING}
+        type: {type: Sequelize.STRING},
+        isMonthly: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: 0
+        }
     },
     {
         sequelize,
