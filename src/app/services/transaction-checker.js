@@ -5,57 +5,23 @@ const dateFormat = 'YYYY-MM-DD';
 
 class TransactionChecker {
 
-    static async check() {
+    static async checkThenCreate() {
         const model = new Transaction();
-        //TODO use async wait
-
-        // const date = moment('2019-01-10 00:00:00', dateFormat);
-        // // console.log(date.toDate());
-        // transaction.findFromDate(date.toDate())
-        //     .then(transactions => {
-        //         console.log(transaction.length);
-        //         console.log(transactions[0].get({plain: true}));
-        //         // if (transaction) {
-        //         //     console.log(transaction);
-        //         // } else {
-        //         //     console.log("transaction doest exist in " + dateString);
-        //         // }
-        //     });
 
         const transactions = await model.findMonthly();
         transactions.forEach(transaction => {
-            const dates = this.getTransactionDates(transaction.date);
+            const transactionRaw = transaction.get({plain: true});
+            const dates = this.getTransactionDates(transactionRaw.date);
             dates.forEach(async date => {
-                transaction.date = date.toDate();
-                const result = await model.findSame(transaction);
-                // console.log(date.format(dateFormat));
-                if (result.length) {
-                    console.log("exist");
-                    // console.log(result[0].get({plain: true}));
+                const rows = await model.findSame(transactionRaw, date);
+                if (!rows.length) {
+                    delete transactionRaw.id;
+                    transactionRaw.isMonthly = 0;
+                    transactionRaw.date = new Date(date);
+                    model.model.create(transactionRaw);
                 }
-                // else
-                //     console.log("doest exist");
             });
         });
-
-        // const transactions = await model.findMonthly();
-        // .then(transactions => {
-        //     // console.log(transactions.length);
-        //     transactions.forEach(transaction => {
-        //         const dates = this.getTransactionDates(transaction.date);
-        //         dates.forEach(date => {
-        //             model.findFromDate(date.toDate()).then(transaction => {
-        //                 console.log(transaction.length);
-        //                 // console.log(transactions[0].get({plain: true}));
-        //                 // if (transaction) {
-        //                 //     console.log(transaction);
-        //                 // } else {
-        //                 //     console.log("transaction doest exist in " + dateString);
-        //                 // }
-        //             });
-        //         });
-        //     });
-        // });
     }
 
     static getTransactionDates(date) {
@@ -65,7 +31,7 @@ class TransactionChecker {
         const dates = [];
         let i = 0;
         while (i <= nbOfMonths) {
-            dates.push(transactionDate.clone());
+            dates.push(transactionDate.clone().toDate());
             transactionDate.add(1, 'months');
             i++;
         }
