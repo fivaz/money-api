@@ -80,7 +80,7 @@ class TransactionProxy extends Proxy {
             .then(transaction => this.findOneFull(transaction.id));
     }
 
-    findIn(transaction, date) {
+    existIn(transaction, date) {
         const Sequelize = db.Sequelize;
         const Op = Sequelize.Op;
 
@@ -100,7 +100,7 @@ class TransactionProxy extends Proxy {
                 destinationAccountId: transaction.destinationAccountId,
                 categoryId: transaction.categoryId
             }
-        });
+        }).then(rows => !!rows.length);
     }
 }
 

@@ -6,25 +6,24 @@ const dateFormat = 'YYYY-MM-DD';
 class TransactionChecker {
 
     static async checkThenCreate() {
-        const model = new Transaction();
-
-        const transactions = await model.findMonthly();
+        const transactionORM = new Transaction();
+        const transactions = await transactionORM.findMonthly();
         transactions.forEach(transaction => {
             const transactionRaw = transaction.get({plain: true});
-            const dates = this.getTransactionDates(transactionRaw.date);
+            const dates = this.getMonthlyDates(transactionRaw.date);
             dates.forEach(async date => {
-                const rows = await model.findIn(transactionRaw, date);
-                if (!rows.length) {
+                const exist = await transactionORM.existIn(transactionRaw, date);
+                if (!exist) {
                     delete transactionRaw.id;
                     transactionRaw.isMonthly = 0;
                     transactionRaw.date = date;
-                    model.model.create(transactionRaw);
+                    transactionORM.model.create(transactionRaw);
                 }
             });
         });
     }
 
-    static getTransactionDates(date) {
+    static getMonthlyDates(date) {
         const transactionDate = moment(date, dateFormat);
         const today = moment();
         const nbOfMonths = today.diff(transactionDate, 'months');
