@@ -24,17 +24,14 @@ class TransactionChecker {
         console.log("check executed");
         const transactions = await this.ORM.findMonthly();
         const createdTransactions = transactions.map(transaction => {
-            //TODO check it later
             const dates = TransactionChecker.getRemainingMonths(transaction.date);
             console.log(dates);
             if (dates.length === 1)
                 return this.cloneTransactionOnce(transaction, dates[0]);
-            else {
-                console.log("ELSE");
-                return Promise.resolve(1);
-            }
-            // else if (dates.length > 2)
-            //     return this.checkThenCloneTransaction(transactionRaw, dates);
+            else if (dates.length > 1)
+                return this.cloneTransactionManyTimes(transaction, dates);
+            else
+                return Promise.resolve();
         });
 
         return Promise.all(createdTransactions);
@@ -42,7 +39,7 @@ class TransactionChecker {
 
     cloneTransactionOnce(transaction, date) {
         const firstStep = this.transactionRemoveMonthly(transaction);
-        const secondStep = this.createTransaction(transaction, date);
+        const secondStep = this.createMonthlyTransaction(transaction, date);
         return Promise.all([firstStep, secondStep]);
     }
 
@@ -52,7 +49,7 @@ class TransactionChecker {
         return this.ORM.update(transactionRaw, transactionRaw.id);
     }
 
-    createTransaction(transaction, date) {
+    createMonthlyTransaction(transaction, date) {
         const transactionRaw = transaction.get({plain: true});
         delete transactionRaw.id;
         transactionRaw.isMonthly = 1;
@@ -60,15 +57,23 @@ class TransactionChecker {
         return this.ORM.create(transactionRaw);
     }
 
-    checkThenCloneTransaction(transaction, dates) {
-        const createdTransactions = dates.map(async date => {
-            const exist = await this.ORM.existIn(transaction, date);
-            if (!exist)
-                return this.cloneTransaction(transaction, date);
+    createTransaction(transaction, date) {
+        const transactionRaw = transaction.get({plain: true});
+        delete transactionRaw.id;
+        transactionRaw.isMonthly = 0;
+        transactionRaw.date = date;
+        return this.ORM.create(transactionRaw);
+    }
+
+    cloneTransactionManyTimes(transaction, dates) {
+        const firstStep = this.transactionRemoveMonthly(transaction);
+        const otherSteps = dates.map(async (date, index) => {
+            if (index === dates.length - 1)
+                return this.createMonthlyTransaction(transaction, date);
             else
-                return Promise.resolve();
+                return this.createTransaction(transaction, date);
         });
-        return Promise.all(createdTransactions);
+        return Promise.all([firstStep, ...otherSteps]);
     }
 
     cloneTransaction(transaction, date) {
