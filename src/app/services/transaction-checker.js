@@ -10,22 +10,20 @@ class TransactionChecker {
     async checkDaily() {
         await this.execCheck();
         const day = 24 * 60 * 60 * 1000;
-        // const day = 60 * 1000;
         this.timer = setInterval(async () => await this.execCheck(), day);
     }
 
-    checkNow() {
+    async checkNow() {
         clearInterval(this.timer);
-        this.execCheck().then(() =>
-            this.checkDaily());
+        await this.execCheck();
+        // noinspection JSIgnoredPromiseFromCall
+        this.checkDaily();
     }
 
     async execCheck() {
-        console.log("check executed");
         const transactions = await this.ORM.findMonthly();
         const createdTransactions = transactions.map(transaction => {
             const dates = TransactionChecker.getRemainingMonths(transaction.date);
-            console.log(dates);
             if (dates.length === 1)
                 return this.cloneTransactionOnce(transaction, dates[0]);
             else if (dates.length > 1)
@@ -38,49 +36,20 @@ class TransactionChecker {
     }
 
     cloneTransactionOnce(transaction, date) {
-        const firstStep = this.transactionRemoveMonthly(transaction);
-        const secondStep = this.createMonthlyTransaction(transaction, date);
+        const firstStep = this.ORM.setNonMonthly(transaction);
+        const secondStep = this.ORM.createMonthlyIn(transaction, date);
         return Promise.all([firstStep, secondStep]);
     }
 
-    transactionRemoveMonthly(transaction) {
-        const transactionRaw = transaction.get({plain: true});
-        transactionRaw.isMonthly = 0;
-        return this.ORM.update(transactionRaw, transactionRaw.id);
-    }
-
-    createMonthlyTransaction(transaction, date) {
-        const transactionRaw = transaction.get({plain: true});
-        delete transactionRaw.id;
-        transactionRaw.isMonthly = 1;
-        transactionRaw.date = date;
-        return this.ORM.create(transactionRaw);
-    }
-
-    createTransaction(transaction, date) {
-        const transactionRaw = transaction.get({plain: true});
-        delete transactionRaw.id;
-        transactionRaw.isMonthly = 0;
-        transactionRaw.date = date;
-        return this.ORM.create(transactionRaw);
-    }
-
     cloneTransactionManyTimes(transaction, dates) {
-        const firstStep = this.transactionRemoveMonthly(transaction);
+        const firstStep = this.ORM.setNonMonthly(transaction);
         const otherSteps = dates.map(async (date, index) => {
             if (index === dates.length - 1)
-                return this.createMonthlyTransaction(transaction, date);
+                return this.ORM.createMonthlyIn(transaction, date);
             else
-                return this.createTransaction(transaction, date);
+                return this.ORM.createIn(transaction, date);
         });
         return Promise.all([firstStep, ...otherSteps]);
-    }
-
-    cloneTransaction(transaction, date) {
-        delete transaction.id;
-        transaction.isMonthly = 0;
-        transaction.date = date;
-        return this.ORM.model.create(transaction);
     }
 
     static getRemainingMonths(date) {

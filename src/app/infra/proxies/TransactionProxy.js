@@ -80,27 +80,26 @@ class TransactionProxy extends Proxy {
             .then(transaction => this.findOneFull(transaction.id));
     }
 
-    existIn(transaction, date) {
-        const Sequelize = db.Sequelize;
-        const Op = Sequelize.Op;
+    setNonMonthly(transaction) {
+        const transactionRaw = transaction.get({plain: true});
+        transactionRaw.isMonthly = 0;
+        return this.model.update(transactionRaw, {where: {id: transactionRaw.id}});
+    }
 
-        const dayBefore = moment(date).subtract(1, 'days').clone();
-        const dayAfter = moment(date).add(1, 'days').clone();
+    createMonthlyIn(transaction, date) {
+        const transactionRaw = transaction.get({plain: true});
+        delete transactionRaw.id;
+        transactionRaw.isMonthly = 1;
+        transactionRaw.date = date;
+        return this.model.create(transactionRaw);
+    }
 
-        return this.model.findAll({
-            where: {
-                description: transaction.description,
-                type: transaction.type,
-                value: transaction.value,
-                date: {
-                    [Op.lt]: dayAfter.toDate(),
-                    [Op.gt]: dayBefore.toDate()
-                },
-                sourceAccountId: transaction.sourceAccountId,
-                destinationAccountId: transaction.destinationAccountId,
-                categoryId: transaction.categoryId
-            }
-        }).then(rows => !!rows.length);
+    createIn(transaction, date) {
+        const transactionRaw = transaction.get({plain: true});
+        delete transactionRaw.id;
+        transactionRaw.isMonthly = 0;
+        transactionRaw.date = date;
+        return this.model.create(transactionRaw);
     }
 }
 
