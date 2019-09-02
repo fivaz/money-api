@@ -1,16 +1,28 @@
 const Transaction = require('../infra/proxies/TransactionProxy');
 const moment = require("moment");
 
-const dateFormat = 'YYYY-MM-DD';
-
 class TransactionChecker {
 
-    static async checkThenCreate() {
+    checkDaily() {
+        this.execCheck();
+        const day = 24 * 60 * 60 * 1000;
+        // const day = 5000;
+        this.timer = setInterval(() => this.execCheck(), day);
+    }
+
+    async checkNow() {
+        clearInterval(this.timer);
+        this.execCheck();
+        this.checkDaily();
+    }
+
+    async execCheck() {
+        // console.log("check executed");
         const transactionORM = new Transaction();
         const transactions = await transactionORM.findMonthly();
         transactions.forEach(transaction => {
             const transactionRaw = transaction.get({plain: true});
-            const dates = this.getMonthlyDates(transactionRaw.date);
+            const dates = TransactionChecker.getMonthlyDates(transactionRaw.date);
             dates.forEach(async date => {
                 const exist = await transactionORM.existIn(transactionRaw, date);
                 if (!exist) {
@@ -24,7 +36,7 @@ class TransactionChecker {
     }
 
     static getMonthlyDates(date) {
-        const transactionDate = moment(date, dateFormat);
+        const transactionDate = moment(date);
         const today = moment();
         const nbOfMonths = today.diff(transactionDate, 'months');
         const dates = [];
