@@ -3,6 +3,10 @@ const moment = require("moment");
 
 class TransactionChecker {
 
+    constructor() {
+        this.ORM = new Transaction();
+    }
+
     checkDaily() {
         this.execCheck().then(() => {
             const day = 24 * 60 * 60 * 1000;
@@ -20,24 +24,33 @@ class TransactionChecker {
 
     async execCheck() {
         console.log("check executed");
-        const transactionORM = new Transaction();
-        const transactions = await transactionORM.findMonthly();
+        const transactions = await this.ORM.findMonthly();
 
-        return Promise.all(transactions.map(transaction => {
+        const createdTransactions = transactions.map(transaction => {
             const transactionRaw = transaction.get({plain: true});
             const dates = TransactionChecker.getMonthlyDates(transactionRaw.date);
-            return Promise.all(dates.map(async date => {
-                const exist = await transactionORM.existIn(transactionRaw, date);
-                if (!exist) {
-                    delete transactionRaw.id;
-                    transactionRaw.isMonthly = 0;
-                    transactionRaw.date = date;
-                    return transactionORM.model.create(transactionRaw);
-                } else {
-                    return Promise.resolve(1);
-                }
-            }));
-        }));
+            return this.checkThenDuplicateTransaction(transactionRaw, dates);
+        });
+
+        return Promise.all(createdTransactions);
+    }
+
+    checkThenDuplicateTransaction(transaction, dates) {
+        const createdTransactions = dates.map(async date => {
+            const exist = await this.ORM.existIn(transaction, date);
+            if (!exist)
+                return this.duplicateTransaction(transaction, date);
+            else
+                return Promise.resolve(1);
+        });
+        return Promise.all(createdTransactions);
+    }
+
+    duplicateTransaction(transaction, date) {
+        delete transaction.id;
+        transaction.isMonthly = 0;
+        transaction.date = date;
+        return this.ORM.model.create(transaction);
     }
 
     static getMonthlyDates(date) {
