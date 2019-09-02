@@ -7,13 +7,11 @@ class TransactionChecker {
         this.ORM = new Transaction();
     }
 
-    checkDaily() {
-        this.execCheck().then(() => {
-            const day = 24 * 60 * 60 * 1000;
-            // const day = 60 * 1000;
-            this.timer = setInterval(() => this.execCheck().then(() =>
-                console.log("exec finished")), day);
-        });
+    async checkDaily() {
+        await this.execCheck();
+        const day = 24 * 60 * 60 * 1000;
+        // const day = 60 * 1000;
+        this.timer = setInterval(async () => await this.execCheck(), day);
     }
 
     checkNow() {
