@@ -4,12 +4,11 @@ const moment = require("moment");
 class TransactionChecker {
 
     checkDaily() {
-        this.execCheck().then(result => {
-            console.log("aaa");
-            console.log(result);
-            // const day = 24 * 60 * 60 * 1000;
-            // // const day = 60 * 1000;
-            // this.timer = setInterval(() => this.execCheck(), day);
+        this.execCheck().then(() => {
+            const day = 24 * 60 * 60 * 1000;
+            // const day = 60 * 1000;
+            this.timer = setInterval(() => this.execCheck().then(() =>
+                console.log("exec finished")), day);
         });
     }
 
