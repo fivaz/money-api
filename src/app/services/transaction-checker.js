@@ -41,7 +41,7 @@ class TransactionChecker {
             if (!exist)
                 return this.duplicateTransaction(transaction, date);
             else
-                return Promise.resolve(1);
+                return Promise.resolve();
         });
         return Promise.all(createdTransactions);
     }
