@@ -1,5 +1,6 @@
 const Proxy = require('./Proxy');
 const db = require('../database');
+const moment = require("moment");
 const Account = db.Account;
 const Category = db.Category;
 const Transaction = db.Transaction;
@@ -77,6 +78,29 @@ class TransactionProxy extends Proxy {
         return this.model
             .create(transaction)
             .then(transaction => this.findOneFull(transaction.id));
+    }
+
+    findSame(transaction) {
+        const Sequelize = db.Sequelize;
+        const Op = Sequelize.Op;
+
+        const dayBefore = moment(transaction.date).subtract(1, 'days').clone();
+        const dayAfter = moment(transaction.date).add(1, 'days').clone();
+
+        return this.model.findAll({
+            where: {
+                description: transaction.description,
+                type: transaction.type,
+                value: transaction.value,
+                date: {
+                    [Op.lt]: dayAfter.toDate(),
+                    [Op.gt]: dayBefore.toDate()
+                },
+                sourceAccountId: transaction.sourceAccountId,
+                destinationAccountId: transaction.destinationAccountId,
+                categoryId: transaction.categoryId
+            }
+        });
     }
 
 }
