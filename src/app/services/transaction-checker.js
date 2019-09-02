@@ -4,35 +4,41 @@ const moment = require("moment");
 class TransactionChecker {
 
     checkDaily() {
-        this.execCheck();
-        const day = 24 * 60 * 60 * 1000;
-        // const day = 5000;
-        this.timer = setInterval(() => this.execCheck(), day);
+        this.execCheck().then(result => {
+            console.log("aaa");
+            console.log(result);
+            // const day = 24 * 60 * 60 * 1000;
+            // // const day = 60 * 1000;
+            // this.timer = setInterval(() => this.execCheck(), day);
+        });
     }
 
-    async checkNow() {
+    checkNow() {
         clearInterval(this.timer);
-        this.execCheck();
-        this.checkDaily();
+        this.execCheck().then(() =>
+            this.checkDaily());
     }
 
     async execCheck() {
-        // console.log("check executed");
+        console.log("check executed");
         const transactionORM = new Transaction();
         const transactions = await transactionORM.findMonthly();
-        transactions.forEach(transaction => {
+
+        return Promise.all(transactions.map(transaction => {
             const transactionRaw = transaction.get({plain: true});
             const dates = TransactionChecker.getMonthlyDates(transactionRaw.date);
-            dates.forEach(async date => {
+            return Promise.all(dates.map(async date => {
                 const exist = await transactionORM.existIn(transactionRaw, date);
                 if (!exist) {
                     delete transactionRaw.id;
                     transactionRaw.isMonthly = 0;
                     transactionRaw.date = date;
-                    transactionORM.model.create(transactionRaw);
+                    return transactionORM.model.create(transactionRaw);
+                } else {
+                    return Promise.resolve(1);
                 }
-            });
-        });
+            }));
+        }));
     }
 
     static getMonthlyDates(date) {
@@ -50,4 +56,6 @@ class TransactionChecker {
     }
 }
 
-module.exports = TransactionChecker;
+const transactionChecker = new TransactionChecker();
+
+module.exports = transactionChecker;

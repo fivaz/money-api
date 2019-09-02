@@ -1,5 +1,6 @@
 const TransactionProxy = require('../infra/proxies/TransactionProxy');
 const RouterHelper = require('./RouterHelper');
+const transactionChecker = require('../services/transaction-checker');
 
 class TransactionRouterHelper extends RouterHelper {
 
@@ -22,7 +23,17 @@ class TransactionRouterHelper extends RouterHelper {
 
     create(req, res) {
         this.model.create(req.body)
-            .then(transaction => res.json(transaction))
+            .then(transaction => {
+                res.json(transaction);
+                transactionChecker.checkNow();
+            })
+            .catch(errors => RouterHelper.sendResponse(res, 412, errors));
+    }
+
+    update(req, res) {
+        this.model
+            .update(req.body, req.params.id)
+            .then(row => res.json(row))
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 }

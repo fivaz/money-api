@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const TransactionChecker = require('../app/services/transaction-checker');
+const transactionChecker = require('../app/services/transaction-checker');
 
 app.use(cors());
 app.use(express.json());
 
-new TransactionChecker().checkDaily();
+transactionChecker.checkDaily();
 
 const userRoutes = require('../app/routes/user-routes');
 userRoutes(app);
