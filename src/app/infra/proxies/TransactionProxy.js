@@ -63,6 +63,10 @@ class TransactionProxy extends Proxy {
             });
     }
 
+    findMonthly() {
+        return this.model.findAll({where: {isMonthly: 1}});
+    }
+
     update(transaction, id) {
         return this.model
             .update(transaction, {where: {id}})
