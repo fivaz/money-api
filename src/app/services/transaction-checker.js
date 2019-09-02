@@ -13,11 +13,11 @@ class TransactionChecker {
             const transactionRaw = transaction.get({plain: true});
             const dates = this.getTransactionDates(transactionRaw.date);
             dates.forEach(async date => {
-                const rows = await model.findSame(transactionRaw, date);
+                const rows = await model.findIn(transactionRaw, date);
                 if (!rows.length) {
                     delete transactionRaw.id;
                     transactionRaw.isMonthly = 0;
-                    transactionRaw.date = new Date(date);
+                    transactionRaw.date = date;
                     model.model.create(transactionRaw);
                 }
             });

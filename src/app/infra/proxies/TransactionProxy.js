@@ -80,12 +80,12 @@ class TransactionProxy extends Proxy {
             .then(transaction => this.findOneFull(transaction.id));
     }
 
-    findSame(transaction, date) {
+    findIn(transaction, date) {
         const Sequelize = db.Sequelize;
         const Op = Sequelize.Op;
 
-        const dayBefore = moment(new Date(date)).subtract(1, 'days').clone();
-        const dayAfter = moment(new Date(date)).add(1, 'days').clone();
+        const dayBefore = moment(date).subtract(1, 'days').clone();
+        const dayAfter = moment(date).add(1, 'days').clone();
 
         return this.model.findAll({
             where: {
