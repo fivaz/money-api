@@ -7,17 +7,33 @@ class TransactionChecker {
         this.ORM = new Transaction();
     }
 
-    async checkDaily() {
+    async start() {
         await this.execCheck();
+        await this.checkTomorrow();
+        this.checkDaily();
+    }
+
+    checkTomorrow() {
+        const tomorrow = moment()
+            .add(1, 'days')
+            .startOf('day');
+        const now = moment();
+        const timeRemaining = tomorrow.diff(now);
+        // const timeRemaining = 5000;
+        return new Promise(resolve =>
+            setTimeout(() =>
+                resolve(this.execCheck()), timeRemaining));
+    }
+
+    checkDaily() {
         const day = 24 * 60 * 60 * 1000;
-        // const day = 10 * 1000;
-        this.timer = setInterval(async () => await this.execCheck(), day);
+        // const day = 5 * 1000;
+        this.timer = setInterval(() => this.execCheck(), day);
     }
 
     async checkNow() {
         clearInterval(this.timer);
         await this.execCheck();
-        // noinspection JSIgnoredPromiseFromCall
         this.checkDaily();
     }
 

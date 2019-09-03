@@ -6,7 +6,7 @@ const transactionChecker = require('../app/services/transaction-checker');
 app.use(cors());
 app.use(express.json());
 
-transactionChecker.checkDaily();
+transactionChecker.start();
 
 const userRoutes = require('../app/routes/user-routes');
 userRoutes(app);

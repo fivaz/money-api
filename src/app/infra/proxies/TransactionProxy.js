@@ -1,6 +1,5 @@
 const Proxy = require('./Proxy');
 const db = require('../database');
-const moment = require("moment");
 const Account = db.Account;
 const Category = db.Category;
 const Transaction = db.Transaction;
