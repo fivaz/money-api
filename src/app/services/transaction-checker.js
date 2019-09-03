@@ -10,6 +10,7 @@ class TransactionChecker {
     async checkDaily() {
         await this.execCheck();
         const day = 24 * 60 * 60 * 1000;
+        // const day = 10 * 1000;
         this.timer = setInterval(async () => await this.execCheck(), day);
     }
 
@@ -21,6 +22,7 @@ class TransactionChecker {
     }
 
     async execCheck() {
+        console.log("checking...");
         const transactions = await this.ORM.findMonthly();
         const createdTransactions = transactions.map(transaction => {
             const dates = TransactionChecker.getRemainingMonths(transaction.date);
@@ -44,10 +46,10 @@ class TransactionChecker {
     cloneTransactionManyTimes(transaction, dates) {
         const firstStep = this.ORM.setNonMonthly(transaction);
         const otherSteps = dates.map(async (date, index) => {
-            if (index === dates.length - 1)
-                return this.ORM.createMonthlyIn(transaction, date);
-            else
+            if (index < dates.length - 1)
                 return this.ORM.createIn(transaction, date);
+            else
+                return this.ORM.createMonthlyIn(transaction, date);
         });
         return Promise.all([firstStep, ...otherSteps]);
     }
