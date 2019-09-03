@@ -70,18 +70,21 @@ class TransactionProxy extends Proxy {
     }
 
     update(transaction, id) {
-        // console.log(transaction);
-        if(transaction.isMonthly){
+        if (transaction.isMonthly) {
             const dates = this.getRemainingMonths(transaction.date);
             if (dates.length) {
                 return this.updateMonthly(transaction, id, dates)
-                    .then(transactions => transactions.map(transaction => transaction.id))
+                    .then(rows => {
+                        rows[0].id = id;
+                        return rows.map(row => row.id);
+                    })
                     .then(ids => this.findFull(ids));
             }
         }
         return this.model
             .update(transaction, {where: {id}})
-            .then(() => this.findOneFull(id));
+            .then(() => this.findOneFull(id))
+            .then(transaction => [transaction]);
     }
 
     create(transaction) {
@@ -101,27 +104,27 @@ class TransactionProxy extends Proxy {
     createMonthly(transaction, dates) {
         if (dates.length === 1)
             return this.createThenCloneOnce(transaction, dates[0]);
-        else if (dates.length > 1)
+        else
             return this.createThenCloneManyTimes(transaction, dates);
     }
 
     updateMonthly(transaction, id, dates) {
-        if (dates.length === 1){
+        if (dates.length === 1)
             return this.updateThenCloneOnce(transaction, id, dates[0]);
-        }else if (dates.length > 1)
+        else
             return this.updateAndCloneManyTimes(transaction, id, dates);
     }
 
-    updateThenCloneOnce(transaction, id, date){
+    updateThenCloneOnce(transaction, id, date) {
         transaction.isMonthly = false;
-        const firstStep = this.model.update(transaction, {where:{id}});
+        const firstStep = this.model.update(transaction, {where: {id}});
         const secondStep = this.createMonthlyIn(transaction, date);
         return Promise.all([firstStep, secondStep]);
     }
 
     updateAndCloneManyTimes(transaction, id, dates) {
         transaction.isMonthly = false;
-        const firstStep = this.model.update(transaction, {where:{id}});
+        const firstStep = this.model.update(transaction, {where: {id}});
         const otherSteps = dates.map((date, index) => {
             if (index < dates.length - 1)
                 return this.createIn(transaction, date);
@@ -130,7 +133,6 @@ class TransactionProxy extends Proxy {
         });
         return Promise.all([firstStep, ...otherSteps]);
     }
-
 
     createThenCloneOnce(transaction, date) {
         transaction.isMonthly = false;
