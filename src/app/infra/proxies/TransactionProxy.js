@@ -11,7 +11,7 @@ class TransactionProxy extends Proxy {
         this.model = Transaction;
     }
 
-    findFull() {
+    findAllFull() {
         return this.model
             .findAll({
                 include: [

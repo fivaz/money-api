@@ -10,7 +10,7 @@ class TransactionRouterHelper extends RouterHelper {
     }
 
     select(req, res) {
-        this.model.findFull()
+        this.model.findAllFull()
             .then(rows => res.json(rows))
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
