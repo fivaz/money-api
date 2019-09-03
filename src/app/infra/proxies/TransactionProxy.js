@@ -65,10 +65,20 @@ class TransactionProxy extends Proxy {
     }
 
     findMonthly() {
+        //TODO check with true
         return this.model.findAll({where: {isMonthly: 1}});
     }
 
     update(transaction, id) {
+        // console.log(transaction);
+        if(transaction.isMonthly){
+            const dates = this.getRemainingMonths(transaction.date);
+            if (dates.length) {
+                return this.updateMonthly(transaction, id, dates)
+                    .then(transactions => transactions.map(transaction => transaction.id))
+                    .then(ids => this.findFull(ids));
+            }
+        }
         return this.model
             .update(transaction, {where: {id}})
             .then(() => this.findOneFull(id));
@@ -79,7 +89,6 @@ class TransactionProxy extends Proxy {
             const dates = this.getRemainingMonths(transaction.date);
             if (dates.length) {
                 return this.createMonthly(transaction, dates)
-                //TODO check it if works
                     .then(transactions => transactions.map(transaction => transaction.id))
                     .then(ids => this.findFull(ids));
             }
@@ -91,23 +100,47 @@ class TransactionProxy extends Proxy {
 
     createMonthly(transaction, dates) {
         if (dates.length === 1)
-            return this.cloneOnce(transaction, dates[0]);
+            return this.createThenCloneOnce(transaction, dates[0]);
         else if (dates.length > 1)
-            return this.cloneManyTimes(transaction, dates);
+            return this.createThenCloneManyTimes(transaction, dates);
     }
 
-    cloneOnce(transaction, date) {
-        //TODO change to false
-        transaction.isMonthly = 0;
+    updateMonthly(transaction, id, dates) {
+        if (dates.length === 1){
+            return this.updateThenCloneOnce(transaction, id, dates[0]);
+        }else if (dates.length > 1)
+            return this.updateAndCloneManyTimes(transaction, id, dates);
+    }
+
+    updateThenCloneOnce(transaction, id, date){
+        transaction.isMonthly = false;
+        const firstStep = this.model.update(transaction, {where:{id}});
+        const secondStep = this.createMonthlyIn(transaction, date);
+        return Promise.all([firstStep, secondStep]);
+    }
+
+    updateAndCloneManyTimes(transaction, id, dates) {
+        transaction.isMonthly = false;
+        const firstStep = this.model.update(transaction, {where:{id}});
+        const otherSteps = dates.map((date, index) => {
+            if (index < dates.length - 1)
+                return this.createIn(transaction, date);
+            else
+                return this.createMonthlyIn(transaction, date);
+        });
+        return Promise.all([firstStep, ...otherSteps]);
+    }
+
+
+    createThenCloneOnce(transaction, date) {
+        transaction.isMonthly = false;
         const firstStep = this.model.create(transaction);
         const secondStep = this.createMonthlyIn(transaction, date);
         return Promise.all([firstStep, secondStep]);
     }
 
-    cloneManyTimes(transaction, dates) {
-        //TODO change to false
-        transaction.isMonthly = 0;
-        console.log(transaction);
+    createThenCloneManyTimes(transaction, dates) {
+        transaction.isMonthly = false;
         const firstStep = this.model.create(transaction);
         const otherSteps = dates.map((date, index) => {
             if (index < dates.length - 1)
@@ -144,22 +177,17 @@ class TransactionProxy extends Proxy {
 
     setNonMonthly(transaction) {
         const transactionRaw = transaction.get({plain: true});
-        transactionRaw.isMonthly = 0;
+        transactionRaw.isMonthly = false;
         return this.model.update(transactionRaw, {where: {id: transactionRaw.id}});
     }
 
     createMonthlyIn(transaction, date) {
-        // const transactionRaw = transaction.get({plain: true});
-        // delete transaction.id;
-        transaction.isMonthly = 1;
-        transaction.date = date;
-        return this.model.create(transaction);
+        transaction.isMonthly = true;
+        return this.createIn(transaction, date);
     }
 
     createIn(transaction, date) {
-        // const transactionRaw = transaction.get({plain: true});
-        // delete transaction.id;
-        // transaction.isMonthly = 0;
+        delete transaction.id;
         transaction.date = date;
         return this.model.create(transaction);
     }
