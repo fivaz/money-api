@@ -103,19 +103,19 @@ class TransactionProxy extends Proxy {
 
     createMonthly(transaction, dates) {
         if (dates.length === 1)
-            return this.createThenCloneOnce(transaction, dates[0]);
+            return this.createAndCloneOnce(transaction, dates[0]);
         else
-            return this.createThenCloneManyTimes(transaction, dates);
+            return this.createAndCloneManyTimes(transaction, dates);
     }
 
     updateMonthly(transaction, id, dates) {
         if (dates.length === 1)
-            return this.updateThenCloneOnce(transaction, id, dates[0]);
+            return this.updateAndCloneOnce(transaction, id, dates[0]);
         else
             return this.updateAndCloneManyTimes(transaction, id, dates);
     }
 
-    updateThenCloneOnce(transaction, id, date) {
+    updateAndCloneOnce(transaction, id, date) {
         transaction.isMonthly = false;
         const firstStep = this.model.update(transaction, {where: {id}});
         const secondStep = this.createMonthlyIn(transaction, date);
@@ -134,14 +134,14 @@ class TransactionProxy extends Proxy {
         return Promise.all([firstStep, ...otherSteps]);
     }
 
-    createThenCloneOnce(transaction, date) {
+    createAndCloneOnce(transaction, date) {
         transaction.isMonthly = false;
         const firstStep = this.model.create(transaction);
         const secondStep = this.createMonthlyIn(transaction, date);
         return Promise.all([firstStep, secondStep]);
     }
 
-    createThenCloneManyTimes(transaction, dates) {
+    createAndCloneManyTimes(transaction, dates) {
         transaction.isMonthly = false;
         const firstStep = this.model.create(transaction);
         const otherSteps = dates.map((date, index) => {
