@@ -23,11 +23,7 @@ class TransactionRouterHelper extends RouterHelper {
 
     create(req, res) {
         this.model.create(req.body)
-            .then(transaction => {
-                res.json(transaction);
-                // noinspection JSIgnoredPromiseFromCall
-                transactionChecker.checkNow();
-            })
+            .then(transactions => res.json(transactions))
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
 
