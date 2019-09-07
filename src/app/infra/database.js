@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('./connection');
 const Model = Sequelize.Model;
+//TODO - use migrations
 // const refreshDB = require('./refresh');
 
 const Account = require('./models/Account');
