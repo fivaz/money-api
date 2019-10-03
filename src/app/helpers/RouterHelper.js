@@ -51,6 +51,24 @@ class RouterHelper {
             .then(row => res.json(row))
             .catch(errors => RouterHelper.sendResponse(res, 412, errors));
     }
+
+    info(req, res) {
+        const {
+            DB_NAME = 'money',
+            DB_USER = 'root',
+            DB_PASSWORD = 'root',
+            DB_HOST = 'localhost',
+            DB_PORT = 3307
+        } = process.env;
+        const info = {
+            DB_NAME,
+            DB_USER,
+            DB_PASSWORD,
+            DB_HOST,
+            DB_PORT,
+        };
+        res.json(info);
+    }
 }
 
 module.exports = RouterHelper;
