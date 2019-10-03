@@ -13,6 +13,4 @@ module.exports = (app) => {
     app.post("/login", (req, res) => helper.login(req, res));
 
     app.delete("/users/:id", verifyToken, (req, res) => helper.delete(req, res));
-
-    app.get("/info", verifyToken, (req, res) => helper.info(req, res))
 };
