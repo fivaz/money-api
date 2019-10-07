@@ -13,7 +13,6 @@ Category.init(
     {
         sequelize,
         modelName: 'categories',
-        paranoid: true
     });
 
 module.exports = Category;

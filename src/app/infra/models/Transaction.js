@@ -18,7 +18,6 @@ Transaction.init({
     {
         sequelize,
         modelName: 'transactions',
-        paranoid: true
     }
 );
 

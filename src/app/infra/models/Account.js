@@ -13,7 +13,6 @@ Account.init(
     {
         sequelize,
         modelName: 'accounts',
-        paranoid: true
     }
 );
 

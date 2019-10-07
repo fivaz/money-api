@@ -18,7 +18,6 @@ User.init(
     {
         sequelize,
         modelName: 'users',
-        paranoid: true
     });
 
 module.exports = User;
