@@ -20,6 +20,6 @@
     "moment": "^2.24.0",
     "mysql2": "^1.6.5",
     "nodemon": "^1.19.1",
-    "sequelize": "^5.10.1"
+    "sequelize": "^5.15.1"
   }
 }
